@@ -1,10 +1,10 @@
-
+import { createUser } from "../services/users.service";
 
 export function renderRegister() {
-  return `
+    return `
     <main class="grid min-h-screen lg:grid-cols-[0.95fr_1.05fr]">
       <section class="hidden border-r border-blue-100 bg-blue-600 p-10 text-white lg:flex lg:flex-col lg:justify-between">
-        <a class="text-xl font-black tracking-tight" href="/src/views/home.html">TaskFlowSPA</a>
+        <a class="text-xl font-black tracking-tight" href="/" data-link>TaskFlowSPA</a>
         <div>
           <p class="text-sm font-semibold uppercase tracking-[0.3em] text-blue-100">Nuevo usuario</p>
           <h1 class="mt-4 text-5xl font-black tracking-tight">Crea tu cuenta y empieza a organizar tu flujo.</h1>
@@ -22,46 +22,73 @@ export function renderRegister() {
               <p class="text-sm font-semibold uppercase tracking-[0.3em] text-blue-600">Registro</p>
               <h2 class="mt-2 text-3xl font-black text-slate-900">Crear cuenta</h2>
             </div>
-            <a class="rounded-full border border-blue-200 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50" href="/src/views/login.html">Ya tengo cuenta</a>
+            <a class="rounded-full border border-blue-200 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50" href="/login" data-link>Ya tengo cuenta</a>
           </div>
 
-          <form class="mt-8 grid gap-5">
+          <form id="register-form" class="mt-8 grid gap-5">
             <div class="grid gap-5 md:grid-cols-2">
               <div>
                 <label class="mb-2 block text-sm font-medium text-slate-700" for="register-name">Nombre</label>
-                <input id="register-name" type="text" placeholder="Ana" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
+                <input id="register-name" name="name" type="text" placeholder="Ana" required class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
               </div>
               <div>
                 <label class="mb-2 block text-sm font-medium text-slate-700" for="register-lastname">Apellido</label>
-                <input id="register-lastname" type="text" placeholder="Torres" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
+                <input id="register-lastname" name="lastname" type="text" placeholder="Torres" required class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
               </div>
             </div>
 
             <div>
               <label class="mb-2 block text-sm font-medium text-slate-700" for="register-email">Correo</label>
-              <input id="register-email" type="email" placeholder="usuario@taskflow.com" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
+              <input id="register-email" name="email" type="email" placeholder="usuario@taskflow.com" required class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
             </div>
 
             <div class="grid gap-5 md:grid-cols-2">
               <div>
                 <label class="mb-2 block text-sm font-medium text-slate-700" for="register-password">Contrasena</label>
-                <input id="register-password" type="password" placeholder="Crea una contrasena" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
+                <input id="register-password" name="password" type="password" placeholder="Crea una contrasena" required class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
               </div>
               <div>
                 <label class="mb-2 block text-sm font-medium text-slate-700" for="register-role">Rol</label>
-                <select id="register-role" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none">
-                  <option>USER</option>
-                  <option>ADMIN</option>
+                <select id="register-role" name="role" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none">
+                  <option value="USER">USER</option>
+                  <option value="ADMIN">ADMIN</option>
                 </select>
               </div>
             </div>
 
-            <a class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500" href="/src/views/login.html">
+            <button type="submit" class="w-full inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500">
               Registrarme
-            </a>
+            </button>
           </form>
         </div>
       </section>
     </main>
   `;
+}
+
+export function initRegister() {
+    const registerForm = document.getElementById('register-form');
+
+    if (registerForm) {
+        registerForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const data = new FormData(registerForm);
+
+            const newUser = {
+                id: crypto.randomUUID(),
+                name: data.get('name').trim(),
+                lastname: data.get('lastname').trim(),
+                email: data.get('email').trim().toLowerCase(),
+                password: data.get('password'),
+                role: data.get('role')
+            };
+
+            console.log('Usuario a registrar:', newUser);
+
+            await createUser(newUser);
+
+            registerForm.reset();
+        });
+    }
 }
