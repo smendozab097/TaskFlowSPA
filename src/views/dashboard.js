@@ -3,8 +3,8 @@ export const renderDashboard = () => {
     <main class="mx-auto max-w-6xl px-6 py-10">
       <section class="rounded-[2rem] bg-blue-600 px-8 py-10 text-white shadow-xl shadow-blue-100">
         <p class="text-sm font-semibold uppercase tracking-[0.3em] text-blue-100">Dashboard principal</p>
-        <h1 class="mt-3 text-4xl font-black tracking-tight">Bienvenida, Ana.</h1>
-        <p class="mt-4 max-w-2xl text-blue-50">Resumen general del trabajo del usuario, accesos rapidos y estado actual de productividad.</p>
+        <h1 id="welcome-heading" class="mt-3 text-4xl font-black tracking-tight">Bienvenido.</h1>
+        <p class="mt-4 max-w-2xl text-blue-50">Resumen general del trabajo del usuario, accesos rápidos y estado actual de productividad.</p>
       </section>
 
       <section class="mt-8 grid gap-4 md:grid-cols-3">
@@ -25,15 +25,15 @@ export const renderDashboard = () => {
       <section class="mt-8">
         <article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50">
           <div class="flex items-center justify-between">
-            <h2 class="text-xl font-bold text-slate-900">Accesos rapidos</h2>
-            <a class="text-sm font-semibold text-blue-700 hover:text-blue-600" href="/src/views/tasks.html">Ver tareas</a>
+            <h2 class="text-xl font-bold text-slate-900">Accesos rápidos</h2>
+            <a class="text-sm font-semibold text-blue-700 hover:text-blue-600" href="/tasks" data-link>Ver tareas</a>
           </div>
           <div class="mt-6 grid gap-4 sm:grid-cols-2">
-            <a class="rounded-3xl bg-blue-50 p-5 hover:bg-blue-100" href="/src/views/task-form.html">
+            <a class="rounded-3xl bg-blue-50 p-5 hover:bg-blue-100" href="/task-form" data-link>
               <p class="text-sm font-semibold text-blue-600">Crear</p>
               <h3 class="mt-2 text-lg font-bold text-slate-900">Nueva tarea</h3>
             </a>
-            <a class="rounded-3xl bg-blue-50 p-5 hover:bg-blue-100" href="/src/views/profile.html">
+            <a class="rounded-3xl bg-blue-50 p-5 hover:bg-blue-100" href="/profile" data-link>
               <p class="text-sm font-semibold text-blue-600">Cuenta</p>
               <h3 class="mt-2 text-lg font-bold text-slate-900">Editar perfil</h3>
             </a>
@@ -42,4 +42,27 @@ export const renderDashboard = () => {
       </section>
     </main>
     `;
+}
+
+export function initDashboard() {
+  const welcomeHeading = document.getElementById('welcome-heading');
+  
+  // Intentamos obtener el usuario guardado en el LocalStorage tras el login
+  const sessionData = localStorage.getItem('currentUser');
+
+  if (sessionData) {
+    try {
+      const user = JSON.parse(sessionData);
+      if (welcomeHeading && user.name) {
+        // Modificamos el saludo de forma dinámica con el nombre real
+        welcomeHeading.textContent = `Bienvenido, ${user.name}.`;
+      }
+    } catch (error) {
+      console.error('Error al parsear los datos de sesión:', error);
+    }
+  } else {
+    console.warn('No hay ninguna sesión activa.');
+    // Cuando configuremos el enrutador completo, aquí redirigiremos al login:
+    // history.pushState(null, null, '/login');
+  }
 }

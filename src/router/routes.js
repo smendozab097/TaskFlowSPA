@@ -16,15 +16,19 @@ const routes = {
         isPublic: true
     },
     "/dashboard": {
-        render: renderDashboard
+        render: renderDashboard,
+        requiresAuth: true
     },
     "/tasks": {
-        render: renderTasks
+        render: renderTasks,
+        requiresAuth: true
     },
     "/profile": {
-        render: renderProfile
+        render: renderProfile,
+        requiresAuth: true
     },
     "/admin": {
-        render: renderAdmin
+        render: renderAdmin,
+        requiresAuth: true
     }
 }

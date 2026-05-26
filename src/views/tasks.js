@@ -2,12 +2,12 @@ export const renderTasks = () => {
     return `
     <header class="border-b border-blue-100 bg-white/90 backdrop-blur">
       <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <a class="text-xl font-black text-blue-900" href="/src/views/home.html">TaskFlowSPA</a>
+        <a class="text-xl font-black text-blue-900" href="/" data-link>TaskFlowSPA</a>
         <nav class="hidden gap-3 md:flex">
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/src/views/dashboard.html">Dashboard</a>
-          <a class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white" href="/src/views/tasks.html">Tareas</a>
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/src/views/profile.html">Perfil</a>
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/src/views/admin.html">Admin</a>
+          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/dashboard" data-link>Dashboard</a>
+          <a class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white" href="/tasks" data-link>Tareas</a>
+          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/profile" data-link>Perfil</a>
+          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/admin" data-link>Admin</a>
         </nav>
       </div>
     </header>
@@ -19,40 +19,70 @@ export const renderTasks = () => {
           <h1 class="mt-3 text-4xl font-black tracking-tight">Mis tareas</h1>
           <p class="mt-4 max-w-2xl text-blue-50">Vista principal para listar, editar y eliminar las tareas del usuario autenticado.</p>
         </div>
-        <a class="inline-flex items-center justify-center rounded-2xl bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50" href="/src/views/task-form.html">
+        <a class="inline-flex items-center justify-center rounded-2xl bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50" href="/task-form" data-link>
           Crear tarea
         </a>
       </section>
 
-      <section class="mt-8 grid gap-4">
-        <article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50">
-          <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-            <div>
-              <p class="text-xs font-bold uppercase tracking-[0.25em] text-blue-600">Completada</p>
-              <h2 class="mt-2 text-2xl font-bold text-slate-900">Definir arquitectura inicial</h2>
-              <p class="mt-3 max-w-2xl text-slate-600">Documentar la estructura por capas y dejar claro el alcance base del proyecto.</p>
-            </div>
-            <div class="flex gap-3">
-              <a class="rounded-full border border-blue-200 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50" href="/src/views/task-form.html">Editar</a>
-              <a class="rounded-full border border-blue-200 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50" href="/src/views/tasks.html">Eliminar</a>
-            </div>
-          </div>
-        </article>
-
-        <article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50">
-          <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-            <div>
-              <p class="text-xs font-bold uppercase tracking-[0.25em] text-blue-600">En progreso</p>
-              <h2 class="mt-2 text-2xl font-bold text-slate-900">Construir vistas iniciales</h2>
-              <p class="mt-3 max-w-2xl text-slate-600">Crear las pantallas base del proyecto para explicar la futura navegacion SPA.</p>
-            </div>
-            <div class="flex gap-3">
-              <a class="rounded-full border border-blue-200 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50" href="/src/views/task-form.html">Editar</a>
-              <a class="rounded-full border border-blue-200 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50" href="/src/views/tasks.html">Eliminar</a>
-            </div>
-          </div>
-        </article>
+      <section id="tasks-container" class="mt-8 grid gap-4">
+        <p class="text-slate-500 text-center py-10">Cargando tareas...</p>
       </section>
     </main>
     `;
+}
+
+export async function initTasks() {
+  const tasksContainer = document.getElementById('tasks-container');
+  
+  if (!tasksContainer) return;
+
+  try {
+    // Aquí llamarías a tu servicio: const tasks = await getTasks();
+    // Por ahora simularemos que recibimos tareas de una API
+    const tasks = [
+      { id: 1, title: "Definir arquitectura inicial", description: "Documentar la estructura por capas...", status: "Completada" },
+      { id: 2, title: "Construir vistas iniciales", description: "Crear las pantallas base del proyecto...", status: "En progreso" }
+    ];
+
+    // Limpiamos el mensaje de "Cargando..."
+    tasksContainer.innerHTML = '';
+
+    if (tasks.length === 0) {
+      tasksContainer.innerHTML = '<p class="text-slate-500 text-center py-10">No tienes tareas registradas.</p>';
+      return;
+    }
+
+    // Iteramos sobre las tareas y creamos el HTML para cada una
+    tasks.forEach(task => {
+      const taskHTML = `
+        <article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50">
+          <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div>
+              <p class="text-xs font-bold uppercase tracking-[0.25em] text-blue-600">${task.status}</p>
+              <h2 class="mt-2 text-2xl font-bold text-slate-900">${task.title}</h2>
+              <p class="mt-3 max-w-2xl text-slate-600">${task.description}</p>
+            </div>
+            <div class="flex gap-3">
+              <a class="rounded-full border border-blue-200 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50" href="/task-form?id=${task.id}" data-link>Editar</a>
+              <button class="delete-btn rounded-full border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50" data-id="${task.id}">Eliminar</button>
+            </div>
+          </div>
+        </article>
+      `;
+      tasksContainer.innerHTML += taskHTML;
+    });
+
+    // Agregar eventos a los botones de eliminar generados dinámicamente
+    document.querySelectorAll('.delete-btn').forEach(button => {
+      button.addEventListener('click', async (e) => {
+        const taskId = e.target.getAttribute('data-id');
+        console.log('Solicitud para eliminar tarea con ID:', taskId);
+        // Aquí llamarías a deleteTask(taskId) y luego volverías a ejecutar initTasks() para refrescar
+      });
+    });
+
+  } catch (error) {
+    console.error('Error al cargar las tareas:', error);
+    tasksContainer.innerHTML = '<p class="text-red-500 text-center py-10">Ocurrió un error al cargar las tareas.</p>';
+  }
 }
