@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Panel administrativo | TaskFlowSPA</title>
-  </head>
-  <body class="min-h-screen bg-sky-50 text-slate-800">
-    <header class="border-b border-blue-100 bg-white/90 backdrop-blur">
+export const renderAdmin = () => {
+    return 
+    `<header class="border-b border-blue-100 bg-white/90 backdrop-blur">
       <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <a class="text-xl font-black text-blue-900" href="/src/views/home.html">TaskFlowSPA</a>
         <nav class="hidden gap-3 md:flex">
@@ -68,8 +62,5 @@
           </div>
         </article>
       </section>
-    </main>
-
-    <script type="module" src="../main.js"></script>
-  </body>
-</html>
+    </main>`;
+}

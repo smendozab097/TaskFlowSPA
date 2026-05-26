@@ -5,8 +5,8 @@ export function renderHome() {
         <a class="text-xl font-black tracking-tight text-blue-900" href="/src/views/home.html">TaskFlowSPA</a>
         <nav class="hidden items-center gap-3 md:flex">
           <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/src/views/home.html">Home</a>
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/src/views/login.html">Login</a>
-          <a class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500" href="/src/views/register.html">Registrarse</a>
+          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/login" data-link>Login</a>
+          <a class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500" href="/register" data-link>Registrarse</a>
         </nav>
       </div>
     </header>
