@@ -1,5 +1,7 @@
+import { deleteTask, getTasks } from "../services/tasks.service";
+
 export const renderTasks = () => {
-    return `
+  return `
     <header class="border-b border-blue-100 bg-white/90 backdrop-blur">
       <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <a class="text-xl font-black text-blue-900" href="/" data-link>TaskFlowSPA</a>
@@ -33,18 +35,13 @@ export const renderTasks = () => {
 
 export async function initTasks() {
   const tasksContainer = document.getElementById('tasks-container');
-  
+
   if (!tasksContainer) return;
 
   try {
-    // Aquí llamarías a tu servicio: const tasks = await getTasks();
-    // Por ahora simularemos que recibimos tareas de una API
-    const tasks = [
-      { id: 1, title: "Definir arquitectura inicial", description: "Documentar la estructura por capas...", status: "Completada" },
-      { id: 2, title: "Construir vistas iniciales", description: "Crear las pantallas base del proyecto...", status: "En progreso" }
-    ];
+    const tasks = await getTasks();
 
-    // Limpiamos el mensaje de "Cargando..."
+    // Limpiamos el contenedor antes de renderizar las tareas
     tasksContainer.innerHTML = '';
 
     if (tasks.length === 0) {
@@ -73,11 +70,35 @@ export async function initTasks() {
     });
 
     // Agregar eventos a los botones de eliminar generados dinámicamente
-    document.querySelectorAll('.delete-btn').forEach(button => {
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+
+    deleteButtons.forEach(button => {
       button.addEventListener('click', async (e) => {
         const taskId = e.target.getAttribute('data-id');
-        console.log('Solicitud para eliminar tarea con ID:', taskId);
-        // Aquí llamarías a deleteTask(taskId) y luego volverías a ejecutar initTasks() para refrescar
+
+        // 1. Pedir confirmacion al usuario antes de eliminar
+        const confirmDelete = confirm('¿Estas seguro de que deseas eliminar esta tarea?');
+
+        // Si el usuario cancela, detenemos la ejecucion de la funcion aqui
+        if (!confirmDelete) return;
+
+        try {
+          console.log('Solicitud para eliminar tarea con ID:', taskId);
+
+          // 2. Esperamos a que la base de datos elimine la tarea
+          await deleteTask(taskId);
+
+          console.log('Tarea eliminada exitosamente.');
+          alert('Tarea eliminada exitosamente.');
+
+          // 3. Volvemos a ejecutar initTasks() para que recargue la lista de tareas
+          // Es importante ponerle await si initTasks es una funcion asincrona
+          await initTasks();
+
+        } catch (error) {
+          console.error('Error al eliminar la tarea:', error);
+          alert('Ocurrio un error al eliminar la tarea. Por favor, intenta nuevamente.');
+        }
       });
     });
 

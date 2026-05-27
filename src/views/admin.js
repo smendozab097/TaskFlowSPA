@@ -1,13 +1,16 @@
+import { getUsers, deleteUser } from '../services/users.service.js';
+
 export const renderAdmin = () => {
-    return 
-    `<header class="border-b border-blue-100 bg-white/90 backdrop-blur">
+    // El backtick AHORA está en la misma línea del return
+    return `
+    <header class="border-b border-blue-100 bg-white/90 backdrop-blur">
       <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <a class="text-xl font-black text-blue-900" href="/src/views/home.html">TaskFlowSPA</a>
+        <a class="text-xl font-black text-blue-900" href="/" data-link>TaskFlowSPA</a>
         <nav class="hidden gap-3 md:flex">
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/src/views/dashboard.html">Dashboard</a>
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/src/views/tasks.html">Tareas</a>
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/src/views/profile.html">Perfil</a>
-          <a class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white" href="/src/views/admin.html">Admin</a>
+          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/dashboard" data-link>Dashboard</a>
+          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/tasks" data-link>Tareas</a>
+          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/profile" data-link>Perfil</a>
+          <a class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white" href="/admin" data-link>Admin</a>
         </nav>
       </div>
     </header>
@@ -23,44 +26,78 @@ export const renderAdmin = () => {
         <article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50">
           <h2 class="text-xl font-bold text-slate-900">Acciones rapidas</h2>
           <div class="mt-5 grid gap-4">
-            <a class="rounded-2xl bg-blue-50 px-5 py-4 text-sm font-semibold text-blue-700 hover:bg-blue-100" href="/src/views/admin.html">Gestionar usuarios</a>
-            <a class="rounded-2xl bg-blue-50 px-5 py-4 text-sm font-semibold text-blue-700 hover:bg-blue-100" href="/src/views/tasks.html">Ver todas las tareas</a>
-            <a class="rounded-2xl bg-blue-50 px-5 py-4 text-sm font-semibold text-blue-700 hover:bg-blue-100" href="/src/views/dashboard.html">Volver al dashboard</a>
+            <a class="rounded-2xl bg-blue-50 px-5 py-4 text-sm font-semibold text-blue-700 hover:bg-blue-100" href="/admin" data-link>Gestionar usuarios</a>
+            <a class="rounded-2xl bg-blue-50 px-5 py-4 text-sm font-semibold text-blue-700 hover:bg-blue-100" href="/tasks" data-link>Ver todas las tareas</a>
+            <a class="rounded-2xl bg-blue-50 px-5 py-4 text-sm font-semibold text-blue-700 hover:bg-blue-100" href="/dashboard" data-link>Volver al dashboard</a>
           </div>
         </article>
 
         <article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50">
           <div class="flex items-center justify-between">
-            <h2 class="text-xl font-bold text-slate-900">Usuarios</h2>
-            <span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-blue-700">Mockup</span>
+            <h2 class="text-xl font-bold text-slate-900">Usuarios Registrados</h2>
           </div>
-          <div class="mt-5 space-y-4">
-            <div class="rounded-2xl bg-blue-50 p-4">
-              <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div>
-                  <p class="font-bold text-slate-900">Ana Torres</p>
-                  <p class="text-sm text-slate-500">ana@taskflow.com</p>
-                </div>
-                <div class="flex gap-2">
-                  <span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-blue-700">USER</span>
-                  <a class="rounded-full border border-blue-200 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-white" href="/src/views/admin.html">Editar rol</a>
-                </div>
-              </div>
-            </div>
-            <div class="rounded-2xl bg-blue-50 p-4">
-              <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div>
-                  <p class="font-bold text-slate-900">Carlos Ruiz</p>
-                  <p class="text-sm text-slate-500">carlos@taskflow.com</p>
-                </div>
-                <div class="flex gap-2">
-                  <span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-blue-700">ADMIN</span>
-                  <a class="rounded-full border border-blue-200 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-white" href="/src/views/admin.html">Editar rol</a>
-                </div>
-              </div>
-            </div>
+          
+          <div id="admin-users-container" class="mt-5 space-y-4">
+            <p class="text-slate-500 text-center">Cargando usuarios...</p>
           </div>
         </article>
       </section>
     </main>`;
+}
+
+export async function initAdmin() {
+  const usersContainer = document.getElementById('admin-users-container');
+  if (!usersContainer) return;
+
+  try {
+    const users = await getUsers();
+    usersContainer.innerHTML = ''; // Limpiamos el mensaje de carga
+
+    if (users.length === 0) {
+      usersContainer.innerHTML = '<p class="text-slate-500 text-center py-4">No hay usuarios registrados.</p>';
+      return;
+    }
+
+    // Recorremos los usuarios de la base de datos y los pintamos
+    users.forEach(user => {
+      const userHTML = `
+        <div class="rounded-2xl bg-blue-50 p-4">
+          <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p class="font-bold text-slate-900">${user.name} ${user.lastname || ''}</p>
+              <p class="text-sm text-slate-500">${user.email}</p>
+            </div>
+            <div class="flex gap-2 items-center">
+              <span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-blue-700">${user.role || 'USER'}</span>
+              <button class="delete-user-btn rounded-full border border-red-200 px-3 py-1 text-xs font-semibold text-red-600 hover:bg-white" data-id="${user.id}">Eliminar</button>
+            </div>
+          </div>
+        </div>
+      `;
+      usersContainer.innerHTML += userHTML;
+    });
+
+    // Le agregamos el evento a los botones de eliminar (como hicimos en las tareas)
+    document.querySelectorAll('.delete-user-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const userId = e.target.getAttribute('data-id');
+        const confirmDelete = confirm('¿Seguro que deseas eliminar a este usuario?');
+        
+        if (confirmDelete) {
+          try {
+            await deleteUser(userId);
+            alert('Usuario eliminado correctamente.');
+            await initAdmin(); // Recargar la lista visualmente
+          } catch (error) {
+            console.error('Error al eliminar usuario:', error);
+            alert('No se pudo eliminar al usuario.');
+          }
+        }
+      });
+    });
+
+  } catch (error) {
+    console.error('Error al cargar la lista de usuarios:', error);
+    usersContainer.innerHTML = '<p class="text-red-500 text-center py-4">Error al cargar los usuarios.</p>';
+  }
 }
