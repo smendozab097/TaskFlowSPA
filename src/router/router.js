@@ -1,39 +1,5 @@
-// import { notFound } from "../views/not-found";
-
-// export const renderRouter = (route) => {
-//     const app = document.getElementById('app');
-
-//     if (!app) {
-//         console.error('No se encontró el elemento con id "app"');
-//         return;
-//     }
-
-//     const currentPath = window.location.pathname;
-//     console.log(currentPath);
-//     const route = routes[currentPath] ?? {render: notFound};
-//     app.innerHTML = route.render();
-
-//     if (route.setup){
-//         route.setup();
-//     }
-
-//     export const initRouter = () => {
-//         document.addEventListener('click', (e) => {
-//             const link = e.target.closest('a[data-link]');
-//             if (link) {
-//                 e.preventDefault();
-//                 const href = link.getAttribute('href');
-//                 history.pushState(null, null, href);
-//                 renderRouter(routes[href] ?? {render: notFound});
-//             }
-//         });
-//     }     
-//     //app.innerHTML = ''; // Limpiar el contenido actual
-//     //route.render(); // Renderizar la vista correspondiente
-// }
-
 import routes from './routes.js';
-import { notFound } from '../views/not-found.js'; // Tomado de la idea de tu TL
+import { renderNotFound } from '../views/not-found.js'; // Tomado de la idea de tu TL
 
 export const renderRouter = async () => {
     const app = document.getElementById('app');
@@ -42,7 +8,7 @@ export const renderRouter = async () => {
     const currentPath = window.location.pathname;
     
     // 1. Elegancia del TL: Si la ruta no existe en el diccionario, renderiza notFound
-    const route = routes[currentPath] ?? { render: notFound };
+    const route = routes[currentPath] ?? { render: renderNotFound };
 
     // --- 2. Seguridad (Lo que añadimos nosotros) ---
     const sessionData = localStorage.getItem('currentUser');
@@ -58,8 +24,8 @@ export const renderRouter = async () => {
     app.innerHTML = route.render();
 
     // 4. Ejecutamos el setup (como lo llama tu TL) o init
-    if (route.setup) {
-        await route.setup();
+    if (route.init) {
+        await route.init();
     }
 };
 
