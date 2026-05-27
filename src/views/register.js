@@ -1,7 +1,8 @@
+import { renderRouter } from "../router/router";
 import { createUser } from "../services/users.service";
 
 export function renderRegister() {
-    return `
+  return `
     <main class="grid min-h-screen lg:grid-cols-[0.95fr_1.05fr]">
       <section class="hidden border-r border-blue-100 bg-blue-600 p-10 text-white lg:flex lg:flex-col lg:justify-between">
         <a class="text-xl font-black tracking-tight" href="/" data-link>TaskFlowSPA</a>
@@ -67,28 +68,39 @@ export function renderRegister() {
 }
 
 export function initRegister() {
-    const registerForm = document.getElementById('register-form');
+  const registerForm = document.getElementById('register-form');
 
-    if (registerForm) {
-        registerForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
+  if (registerForm) {
+    registerForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
 
-            const data = new FormData(registerForm);
+      const data = new FormData(registerForm);
 
-            const newUser = {
-                id: crypto.randomUUID(),
-                name: data.get('name').trim(),
-                lastname: data.get('lastname').trim(),
-                email: data.get('email').trim().toLowerCase(),
-                password: data.get('password'),
-                role: data.get('role')
-            };
+      const newUser = {
+        id: crypto.randomUUID(),
+        name: data.get('name').trim(),
+        lastname: data.get('lastname').trim(),
+        email: data.get('email').trim().toLowerCase(),
+        password: data.get('password'),
+        role: [data.get('role')]
+      };
 
-            console.log('Usuario a registrar:', newUser);
+      console.log('Usuario a registrar:', newUser);
 
-            await createUser(newUser);
+      try {
+        await createUser(newUser);
 
-            registerForm.reset();
-        });
-    }
+        registerForm.reset();
+
+        // 3. Cambiamos la URL y disparamos el router para renderizar la nueva vista
+        alert('Registro exitoso. Inicia sesion para continuar.');
+        history.pushState(null, null, '/login');
+        renderRouter;
+
+      } catch (error) {
+        console.error('Error al registrar usuario:', error);
+        alert('Ocurrio un problema al registrar la cuenta.');
+      }
+    });
+  }
 }
