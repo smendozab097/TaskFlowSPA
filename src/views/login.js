@@ -75,7 +75,8 @@ export function initLogin() {
           loginForm.reset();
 
           // AQUI: Mas adelante tu enrutador hara la redireccion al Dashboard
-          // history.pushState(null, null, '/dashboard');
+          history.pushState(null, null, '/dashboard');
+          window.dispatchEvent(new Event('popstate'));
           
         } else {
           console.error('Credenciales incorrectas');

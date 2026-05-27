@@ -132,6 +132,8 @@ export async function initTaskForm() {
 
       // Despues de guardar o actualizar, limpiamos el formulario
       taskForm.reset();
+      history.pushState(null, null, '/tasks');
+      window.dispatchEvent(new Event('popstate'));
       
       // AQUI: El enrutador nos debera devolver a la lista de tareas
       // history.pushState(null, null, '/tasks');

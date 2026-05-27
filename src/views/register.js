@@ -1,4 +1,3 @@
-import { renderRouter } from "../router/router";
 import { createUser } from "../services/users.service";
 
 export function renderRegister() {
@@ -92,10 +91,13 @@ export function initRegister() {
 
         registerForm.reset();
 
-        // 3. Cambiamos la URL y disparamos el router para renderizar la nueva vista
         alert('Registro exitoso. Inicia sesion para continuar.');
+        
+        // 1. Cambiamos la URL
         history.pushState(null, null, '/login');
-        renderRouter;
+        
+        // 2. Disparamos el evento para que el enrutador haga el cambio de HTML
+        window.dispatchEvent(new Event('popstate'));
 
       } catch (error) {
         console.error('Error al registrar usuario:', error);

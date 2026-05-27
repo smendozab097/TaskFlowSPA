@@ -117,6 +117,8 @@ export function initProfile() {
           localStorage.removeItem('currentUser');
           
           alert('Tu cuenta ha sido eliminada.');
+          history.pushState(null, null, '/login');
+          window.dispatchEvent(new Event('popstate'));
           
           // history.pushState(null, null, '/login');
         } catch (error) {
