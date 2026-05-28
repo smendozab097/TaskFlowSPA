@@ -40,7 +40,7 @@ export const renderProfile = () => {
             </div>
 
             <div>
-              <label class="mb-2 block text-sm font-medium text-slate-700" for="password-new">Nueva contrasena</label>
+              <label class="mb-2 block text-sm font-medium text-slate-700" for="password-new">Nueva contraseña</label>
               <input id="password-new" name="password" type="password" placeholder="Escribe solo si deseas cambiarla" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
             </div>
 

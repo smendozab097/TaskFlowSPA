@@ -10,23 +10,28 @@ import { renderAdmin, initAdmin } from "../views/admin.js";
 const routes = {
     "/": {
         render: renderHome,
-        title: "Inicio | TaskFlowSPA"
+        title: "Inicio | TaskFlowSPA",
+        requiresAuth: false
     },
     "/login": {
         render: renderLogin,
         init: initLogin,
-        title: "Iniciar Sesion | TaskFlowSPA"
+        title: "Iniciar Sesion | TaskFlowSPA",
+        requiresAuth: false,
+        redirectIfAuthenticated:true
     },
     "/register": {
         render: renderRegister,
         init: initRegister,
-        title: "Registrarse | TaskFlowSPA"
+        title: "Registrarse | TaskFlowSPA",
+        requiresAuth: false,
+        redirectIfAuthenticated:true
     },
     "/dashboard": {
         render: renderDashboard,
         init: initDashboard,
         requiresAuth: true,
-        title: "Dashboard | TaskFlowSPA"
+        title: "Dashboard | TaskFlowSPA",
     },
     "/tasks": {
         render: renderTasks,

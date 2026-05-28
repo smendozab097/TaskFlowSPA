@@ -91,10 +91,10 @@ export function initRegister() {
 
         registerForm.reset();
 
-        alert('Registro exitoso. Inicia sesion para continuar.');
+        alert('Registro exitoso.');
         
         // 1. Cambiamos la URL
-        history.pushState(null, null, '/login');
+        history.pushState(null, null, '/dashboard');
         
         // 2. Disparamos el evento para que el enrutador haga el cambio de HTML
         window.dispatchEvent(new Event('popstate'));
