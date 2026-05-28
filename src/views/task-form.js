@@ -109,13 +109,18 @@ export async function initTaskForm() {
   taskForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    // Capturamos al usuario que tiene la sesión activa para poder relacionar la tarea con su ID (userId)
+    const sessionData = localStorage.getItem('currentUser');
+    const user = JSON.parse(sessionData);
+
     const data = new FormData(taskForm);
     
     const taskData = {
       title: data.get('title').trim(),
       description: data.get('description').trim(),
       status: data.get('status'),
-      date: data.get('date')
+      date: data.get('date'),
+      userid: user.id // Asignamos el ID del usuario
     };
 
     try {

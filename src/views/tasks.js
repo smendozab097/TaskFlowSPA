@@ -38,8 +38,18 @@ export async function initTasks() {
 
   if (!tasksContainer) return;
 
+  // NUEVO 1: Obtenemos la sesion del usuario para saber quien es y que rol tiene
+  const sessionData = localStorage.getItem('currentUser');
+  if (!sessionData) return;
+  const user = JSON.parse(sessionData);
+
   try {
-    const tasks = await getTasks();
+    // NUEVO 2: Verificamos si el usuario es administrador revisando su array de roles
+    const isAdmin = user.role && user.role.includes('ADMIN');
+    console.log(isAdmin ? 'Usuario con rol ADMIN' : 'Usuario con rol USER');
+
+    // NUEVO 3: Si es ADMIN pide todas las tareas (sin id), si es USER pide solo las suyas (con id)
+    const tasks = isAdmin ? await getTasks() : await getTasks(user.id);
 
     // Limpiamos el contenedor antes de renderizar las tareas
     tasksContainer.innerHTML = '';
