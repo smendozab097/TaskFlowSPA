@@ -1,17 +1,10 @@
+import { getSession } from '../services/auth.service.js';
+import { renderHeader, initHeader } from '../components/header.js';
+
 export const renderDashboard = () => {
     return `
-    <header class="border-b border-blue-100 bg-white/90 backdrop-blur">
-      <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <a class="text-xl font-black text-blue-900" href="/">TaskFlowSPA</a>
-        <nav class="hidden gap-3 md:flex">
-          <a class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white" href="/dashboard">Dashboard</a>
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/tasks">Tareas</a>
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/profile">Perfil</a>
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/admin">Admin</a>
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50" href="/login">Logout</a>
-        </nav>
-      </div>
-    </header>
+    ${renderHeader()}
+    
     <main class="mx-auto max-w-6xl px-6 py-10">
       <section class="rounded-[2rem] bg-blue-600 px-8 py-10 text-white shadow-xl shadow-blue-100">
         <p class="text-sm font-semibold uppercase tracking-[0.3em] text-blue-100">Dashboard principal</p>
@@ -57,24 +50,16 @@ export const renderDashboard = () => {
 }
 
 export function initDashboard() {
-  const welcomeHeading = document.getElementById('welcome-heading');
-  
-  // Intentamos obtener el usuario guardado en el LocalStorage tras el login
-  const sessionData = localStorage.getItem('currentUser');
+  initHeader();
 
-  if (sessionData) {
-    try {
-      const user = JSON.parse(sessionData);
-      if (welcomeHeading && user.name) {
-        // Modificamos el saludo de forma dinámica con el nombre real
-        welcomeHeading.textContent = `Bienvenido, ${user.name}.`;
-      }
-    } catch (error) {
-      console.error('Error al parsear los datos de sesión:', error);
+  const welcomeHeading = document.getElementById('welcome-heading');
+  const user = getSession();
+
+  if (user) {
+    if (welcomeHeading && user.name) {
+      welcomeHeading.textContent = `Bienvenido, ${user.name}.`;
     }
   } else {
     console.warn('No hay ninguna sesión activa.');
-    // Cuando configuremos el enrutador completo, aquí redirigiremos al login:
-    // history.pushState(null, null, '/login');
   }
 }

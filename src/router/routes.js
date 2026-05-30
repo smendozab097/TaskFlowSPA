@@ -1,15 +1,16 @@
-import { renderHome } from "../views/home.js";
-import { renderRegister, initRegister } from "../views/register.js";
-import { renderLogin, initLogin } from "../views/login.js";
+import { renderHome, initHome } from "../views/home.js";
+import { renderRegister, initRegister } from "../views/auth/register.js";
+import { renderLogin, initLogin } from "../views/auth/login.js";
 import { renderDashboard, initDashboard } from "../views/dashboard.js";
-import { renderTasks, initTasks } from "../views/tasks.js";
-import { renderTaskForm, initTaskForm } from "../views/task-form.js";
-import { renderProfile, initProfile } from "../views/profile.js";
-import { renderAdmin, initAdmin } from "../views/admin.js";
+import { renderTasks, initTasks } from "../views/tasks/tasks.js";
+import { renderTaskForm, initTaskForm } from "../views/tasks/task-form.js";
+import { renderProfile, initProfile } from "../views/users/profile.js";
+import { renderAdmin, initAdmin } from "../views/users/admin.js";
 
 const routes = {
     "/": {
         render: renderHome,
+        init: initHome,
         title: "Inicio | TaskFlowSPA",
         requiresAuth: false
     },
@@ -18,14 +19,14 @@ const routes = {
         init: initLogin,
         title: "Iniciar Sesion | TaskFlowSPA",
         requiresAuth: false,
-        redirectIfAuthenticated:true
+        redirectIfAuthenticated: true
     },
     "/register": {
         render: renderRegister,
         init: initRegister,
         title: "Registrarse | TaskFlowSPA",
         requiresAuth: false,
-        redirectIfAuthenticated:true
+        redirectIfAuthenticated: true
     },
     "/dashboard": {
         render: renderDashboard,

@@ -1,4 +1,5 @@
-import { createUser } from "../services/users.service";
+import { createUser } from "../../services/users.service.js";
+import { createSession } from "../../services/auth.service.js";
 
 export function renderRegister() {
   return `
@@ -56,7 +57,7 @@ export function renderRegister() {
               </div>
             </div>
 
-            <button type="submit" class="w-full inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500">
+            <button type="submit" class="w-full inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer">
               Registrarme
             </button>
           </form>
@@ -90,13 +91,16 @@ export function initRegister() {
         await createUser(newUser);
 
         registerForm.reset();
-
-        alert('Registro exitoso.');
         
-        // 1. Cambiamos la URL
+        // Logueamos automáticamente al usuario
+        createSession(newUser);
+
+        alert('Registro exitoso e inicio de sesión automático.');
+        
+        // Cambiamos la URL
         history.pushState(null, null, '/dashboard');
         
-        // 2. Disparamos el evento para que el enrutador haga el cambio de HTML
+        // Disparamos el evento para que el enrutador haga el cambio de HTML
         window.dispatchEvent(new Event('popstate'));
 
       } catch (error) {

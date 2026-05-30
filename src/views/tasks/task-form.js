@@ -1,17 +1,10 @@
-import { createTask, updateTask, getTaskById } from '../services/tasks.service.js';
+import { createTask, updateTask, getTaskById } from '../../services/tasks.service.js';
+import { getSession } from '../../services/auth.service.js';
+import { renderHeader, initHeader } from '../../components/header.js';
 
 export const renderTaskForm = () => {
     return `
-    <header class="border-b border-blue-100 bg-white/90 backdrop-blur">
-      <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-        <a class="text-xl font-black text-blue-900" href="/" data-link>TaskFlowSPA</a>
-        <nav class="hidden gap-3 md:flex">
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/dashboard" data-link>Dashboard</a>
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/tasks" data-link>Tareas</a>
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/profile" data-link>Perfil</a>
-        </nav>
-      </div>
-    </header>
+    ${renderHeader()}
 
     <main class="mx-auto max-w-5xl px-6 py-10">
       <section class="rounded-[2rem] border border-blue-100 bg-white p-8 shadow-xl shadow-blue-50">
@@ -47,7 +40,7 @@ export const renderTaskForm = () => {
           </div>
 
           <div class="flex flex-col gap-3 pt-2 sm:flex-row">
-            <button id="submit-btn" type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500">
+            <button id="submit-btn" type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer">
               Guardar tarea
             </button>
             <a class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50" href="/tasks" data-link>
@@ -60,6 +53,8 @@ export const renderTaskForm = () => {
 }
 
 export async function initTaskForm() {
+  initHeader();
+
   const taskForm = document.getElementById('task-form');
   const formTitle = document.getElementById('form-title');
   const formDescription = document.getElementById('form-description');
@@ -67,11 +62,9 @@ export async function initTaskForm() {
 
   if (!taskForm) return;
 
-  // 1. Leer la URL para ver si estamos en modo Edicion
   const urlParams = new URLSearchParams(window.location.search);
   const taskId = urlParams.get('id');
 
-  // Evaluamos en que modo estamos
   if (taskId) {
     // MODO EDICION
     formTitle.textContent = 'Editar tarea';
@@ -79,16 +72,13 @@ export async function initTaskForm() {
     submitBtn.textContent = 'Actualizar tarea';
 
     try {
-      // Traemos los datos de la base de datos
       const taskToEdit = await getTaskById(taskId);
       
-      // Llenamos los campos
       document.getElementById('title').value = taskToEdit.title;
       document.getElementById('description').value = taskToEdit.description;
       document.getElementById('status').value = taskToEdit.status;
       document.getElementById('date').value = taskToEdit.date;
       
-      // Mostramos el formulario
       taskForm.classList.remove('hidden');
     } catch (error) {
       console.error('Error al cargar la tarea:', error);
@@ -101,17 +91,14 @@ export async function initTaskForm() {
     formDescription.textContent = 'Registra los detalles para tu nueva tarea.';
     submitBtn.textContent = 'Guardar tarea';
     
-    // Mostramos el formulario vacio
     taskForm.classList.remove('hidden');
   }
 
-  // 2. Manejamos el envio del formulario (Submit)
   taskForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Capturamos al usuario que tiene la sesión activa para poder relacionar la tarea con su ID (userId)
-    const sessionData = localStorage.getItem('currentUser');
-    const user = JSON.parse(sessionData);
+    const user = getSession();
+    if (!user) return;
 
     const data = new FormData(taskForm);
     
@@ -120,29 +107,23 @@ export async function initTaskForm() {
       description: data.get('description').trim(),
       status: data.get('status'),
       date: data.get('date'),
-      userid: user.id // Asignamos el ID del usuario
+      userid: user.id
     };
 
     try {
       if (taskId) {
-        // Si teniamos un ID en la URL, significa que estamos actualizando
         await updateTask(taskId, taskData);
         alert('Tarea actualizada exitosamente.');
       } else {
-        // Si no habia ID, significa que estamos creando una nueva
-        taskData.id = crypto.randomUUID(); // Generamos un ID unico
+        taskData.id = crypto.randomUUID();
         await createTask(taskData);
         alert('Tarea creada exitosamente.');
       }
 
-      // Despues de guardar o actualizar, limpiamos el formulario
       taskForm.reset();
       history.pushState(null, null, '/tasks');
       window.dispatchEvent(new Event('popstate'));
       
-      // AQUI: El enrutador nos debera devolver a la lista de tareas
-      // history.pushState(null, null, '/tasks');
-
     } catch (error) {
       console.error('Error al guardar la tarea:', error);
       alert('Ocurrio un error al intentar guardar la tarea.');

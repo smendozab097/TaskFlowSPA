@@ -1,5 +1,6 @@
 import routes from './routes.js';
-import { renderNotFound } from '../views/not-found.js'; // Tomado de la idea de tu TL
+import { renderNotFound } from '../views/not-found.js';
+import { getSession } from '../services/auth.service.js';
 
 export const renderRouter = async () => {
     const app = document.getElementById('app');
@@ -7,46 +8,60 @@ export const renderRouter = async () => {
 
     const currentPath = window.location.pathname;
     
-    // 1. Elegancia del TL: Si la ruta no existe en el diccionario, renderiza notFound
+    // Si la ruta no existe en el diccionario, renderiza notFound
     const route = routes[currentPath] ?? { render: renderNotFound };
 
-    // --- 2. Seguridad (Lo que añadimos nosotros) ---
-    const sessionData = localStorage.getItem('currentUser');
-    const user = sessionData ? JSON.parse(sessionData) : null;
+    // --- Seguridad y Guards ---
+    const user = getSession();
 
+    // 1. Guard: Autenticación requerida
     if (route.requiresAuth && !user) {
         history.pushState(null, null, '/login');
-        return renderRouter(); // Volvemos a ejecutar para renderizar el login
+        return renderRouter();
     }
-    // -----------------------------------------------
 
-    // 3. Renderizamos la vista
+    // 2. Guard: Redirección si ya está autenticado (evita ver Login/Register de nuevo)
+    if (user && route.redirectIfAuthenticated) {
+        history.pushState(null, null, '/dashboard');
+        return renderRouter();
+    }
+
+    // 3. Guard: Autorización de roles (allowedRoles)
+    if (route.allowedRoles && user) {
+        const hasPermission = route.allowedRoles.some(role => user.role && user.role.includes(role));
+        if (!hasPermission) {
+            console.warn(`Usuario no autorizado para entrar a: ${currentPath}`);
+            alert('No tienes permisos para acceder a esta sección.');
+            history.pushState(null, null, '/dashboard');
+            return renderRouter();
+        }
+    }
+    // ---------------------------
+
+    // 4. Renderizamos la vista
     app.innerHTML = route.render();
 
-    // 4. Ejecutamos el setup (como lo llama tu TL) o init
+    // 5. Ejecutamos la inicialización de la vista
     if (route.init) {
         await route.init();
     }
 };
 
 export const initRouter = () => {
-    // 1. Soporte para las flechas Atrás/Adelante del navegador (CRÍTICO)
+    // Soporte para las flechas Atrás/Adelante del navegador
     window.addEventListener('popstate', renderRouter);
 
-    // 2. Interceptamos los clics en enlaces (La lógica del TL)
+    // Interceptamos los clics en enlaces SPA
     document.addEventListener('click', (e) => {
-        const link = e.target.closest('a[data-link]'); // Selector muy eficiente
+        const link = e.target.closest('a[data-link]');
         if (link) {
             e.preventDefault();
             const href = link.getAttribute('href');
             history.pushState(null, null, href);
-            
-            // Llamamos a renderRouter sin pasarle la ruta, 
-            // ella misma leerá el window.location actualizado.
             renderRouter(); 
         }
     });
 
-    // 3. Primera carga al abrir la página
+    // Primera carga al abrir la página
     renderRouter();
 };

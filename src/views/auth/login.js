@@ -1,4 +1,5 @@
-import { getUsers } from '../services/users.service.js';
+import { getUsers } from '../../services/users.service.js';
+import { createSession } from '../../services/auth.service.js';
 
 export const renderLogin = () => {
     return `
@@ -25,7 +26,7 @@ export const renderLogin = () => {
               <label class="mb-2 block text-sm font-medium text-slate-700" for="password">Contrasena</label>
               <input id="password" name="password" type="password" placeholder="Ingresa tu contrasena" required class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
             </div>
-            <button type="submit" class="w-full inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500">
+            <button type="submit" class="w-full inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer">
               Entrar al dashboard
             </button>
           </form>
@@ -60,21 +61,17 @@ export function initLogin() {
       console.log('Intentando iniciar sesion con:', email);
 
       try {
-        // Obtenemos todos los usuarios usando el servicio
         const users = await getUsers();
-        
-        // Buscamos si existe un usuario con ese correo y contraseña
         const userMatch = users.find(u => u.email === email && u.password === password);
 
         if (userMatch) {
           console.log('Login exitoso:', userMatch);
           
-          // Guardamos la sesion activa en LocalStorage
-          localStorage.setItem('currentUser', JSON.stringify(userMatch));
+          // Guardamos la sesion activa usando el servicio
+          createSession(userMatch);
           
           loginForm.reset();
 
-          // AQUI: Mas adelante tu enrutador hara la redireccion al Dashboard
           history.pushState(null, null, '/dashboard');
           window.dispatchEvent(new Event('popstate'));
           

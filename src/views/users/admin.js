@@ -1,19 +1,9 @@
-import { getUsers, deleteUser } from '../services/users.service.js';
+import { getUsers, deleteUser } from '../../services/users.service.js';
+import { renderHeader, initHeader } from '../../components/header.js';
 
 export const renderAdmin = () => {
-    // El backtick AHORA está en la misma línea del return
     return `
-    <header class="border-b border-blue-100 bg-white/90 backdrop-blur">
-      <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <a class="text-xl font-black text-blue-900" href="/" data-link>TaskFlowSPA</a>
-        <nav class="hidden gap-3 md:flex">
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/dashboard" data-link>Dashboard</a>
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/tasks" data-link>Tareas</a>
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/profile" data-link>Perfil</a>
-          <a class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white" href="/admin" data-link>Admin</a>
-        </nav>
-      </div>
-    </header>
+    ${renderHeader()}
 
     <main class="mx-auto max-w-7xl px-6 py-10">
       <section class="rounded-[2rem] bg-blue-600 px-8 py-10 text-white shadow-xl shadow-blue-100">
@@ -46,19 +36,20 @@ export const renderAdmin = () => {
 }
 
 export async function initAdmin() {
+  initHeader();
+
   const usersContainer = document.getElementById('admin-users-container');
   if (!usersContainer) return;
 
   try {
     const users = await getUsers();
-    usersContainer.innerHTML = ''; // Limpiamos el mensaje de carga
+    usersContainer.innerHTML = '';
 
     if (users.length === 0) {
       usersContainer.innerHTML = '<p class="text-slate-500 text-center py-4">No hay usuarios registrados.</p>';
       return;
     }
 
-    // Recorremos los usuarios de la base de datos y los pintamos
     users.forEach(user => {
       const userHTML = `
         <div class="rounded-2xl bg-blue-50 p-4">
@@ -69,7 +60,7 @@ export async function initAdmin() {
             </div>
             <div class="flex gap-2 items-center">
               <span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-blue-700">${user.role || 'USER'}</span>
-              <button class="delete-user-btn rounded-full border border-red-200 px-3 py-1 text-xs font-semibold text-red-600 hover:bg-white" data-id="${user.id}">Eliminar</button>
+              <button class="delete-user-btn rounded-full border border-red-200 px-3 py-1 text-xs font-semibold text-red-600 hover:bg-white cursor-pointer" data-id="${user.id}">Eliminar</button>
             </div>
           </div>
         </div>
@@ -77,7 +68,6 @@ export async function initAdmin() {
       usersContainer.innerHTML += userHTML;
     });
 
-    // Le agregamos el evento a los botones de eliminar (como hicimos en las tareas)
     document.querySelectorAll('.delete-user-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         const userId = e.target.getAttribute('data-id');
@@ -87,7 +77,7 @@ export async function initAdmin() {
           try {
             await deleteUser(userId);
             alert('Usuario eliminado correctamente.');
-            await initAdmin(); // Recargar la lista visualmente
+            await initAdmin();
           } catch (error) {
             console.error('Error al eliminar usuario:', error);
             alert('No se pudo eliminar al usuario.');

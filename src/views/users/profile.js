@@ -1,17 +1,10 @@
-import { updateUser, deleteUser } from '../services/users.service.js';
+import { updateUser, deleteUser } from '../../services/users.service.js';
+import { getSession, deleteSession, createSession } from '../../services/auth.service.js';
+import { renderHeader, initHeader } from '../../components/header.js';
 
 export const renderProfile = () => {
     return `
-    <header class="border-b border-blue-100 bg-white/90 backdrop-blur">
-      <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-        <a class="text-xl font-black text-blue-900" href="/" data-link>TaskFlowSPA</a>
-        <nav class="hidden gap-3 md:flex">
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/dashboard" data-link>Dashboard</a>
-          <a class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700" href="/tasks" data-link>Tareas</a>
-          <a class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white" href="/profile" data-link>Perfil</a>
-        </nav>
-      </div>
-    </header>
+    ${renderHeader()}
 
     <main class="mx-auto max-w-5xl px-6 py-10">
       <section class="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
@@ -45,10 +38,10 @@ export const renderProfile = () => {
             </div>
 
             <div class="flex flex-col gap-3 pt-2 sm:flex-row">
-              <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500">
+              <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer">
                 Guardar cambios
               </button>
-              <button type="button" id="delete-account-btn" class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-red-600 hover:bg-red-50">
+              <button type="button" id="delete-account-btn" class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-red-600 hover:bg-red-50 cursor-pointer">
                 Eliminar mi cuenta
               </button>
             </div>
@@ -59,20 +52,19 @@ export const renderProfile = () => {
 }
 
 export function initProfile() {
+  initHeader();
+
   const profileForm = document.getElementById('profile-form');
   const deleteBtn = document.getElementById('delete-account-btn');
   
-  const sessionData = localStorage.getItem('currentUser');
-  if (!sessionData) return;
-  
-  const user = JSON.parse(sessionData);
+  const user = getSession();
+  if (!user) return;
 
   if (profileForm) {
     document.getElementById('name').value = user.name || '';
     document.getElementById('lastname').value = user.lastname || '';
     document.getElementById('profile-email').value = user.email || '';
 
-    // EVENTO DE ACTUALIZAR
     profileForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -88,11 +80,8 @@ export function initProfile() {
       };
 
       try {
-        // 1. Guardamos en la base de datos real
         await updateUser(user.id, updatedUser);
-
-        // 2. Actualizamos la sesion del navegador
-        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+        createSession(updatedUser);
         
         document.getElementById('password-new').value = '';
         alert('Perfil actualizado correctamente.');
@@ -102,7 +91,6 @@ export function initProfile() {
       }
     });
 
-    // EVENTO DE ELIMINAR
     if (deleteBtn) {
       deleteBtn.addEventListener('click', async () => {
         const isConfirmed = confirm('¿Seguro que deseas eliminar tu cuenta? Esta accion no se puede deshacer.');
@@ -110,17 +98,13 @@ export function initProfile() {
         if (!isConfirmed) return;
 
         try {
-          // 1. Borramos de la base de datos real
           await deleteUser(user.id);
-
-          // 2. Borramos la sesion del navegador
-          localStorage.removeItem('currentUser');
+          deleteSession();
           
           alert('Tu cuenta ha sido eliminada.');
           history.pushState(null, null, '/login');
           window.dispatchEvent(new Event('popstate'));
           
-          // history.pushState(null, null, '/login');
         } catch (error) {
           console.error('Error al eliminar:', error);
           alert('Hubo un problema al eliminar la cuenta.');

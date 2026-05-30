@@ -1,17 +1,14 @@
+const Key = "currentUser";
 
+export const createSession = (usuario) => {
+    localStorage.setItem(Key, JSON.stringify(usuario));
+};
 
+export const getSession = () => {
+    const sessionJSON = localStorage.getItem(Key);
+    return sessionJSON ? JSON.parse(sessionJSON) : null;
+};
 
-const Key = "Actual_Session"
-
-export const createSession = (usuario) =>{
-    localStorage.setItem(Key, JSON.stringify(usuario))
-}
-
-export const getSession = (usuario) =>{
-    const sessionJSON = localStorage.getItem(key)
-    return JSON.parse(sessionJSON)
-}
-
-export const deleteSession = ()=> {
-    localStorage.removeItem()
-}
+export const deleteSession = () => {
+    localStorage.removeItem(Key);
+};

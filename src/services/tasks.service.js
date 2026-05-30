@@ -25,8 +25,8 @@ export async function createTask(task) {
     return response;
 }
 
-export async function getTaskById(userId) {
-    const response = await fetch(`${endpointTask}/${userId}`);
+export async function getTaskById(taskId) {
+    const response = await fetch(`${endpointTask}/${taskId}`);
     const data = await response.json();
     return data;
 }
