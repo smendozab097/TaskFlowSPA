@@ -1,13 +1,14 @@
 import routes from './routes.js';
 import { renderNotFound } from '../views/not-found.js';
 import { getSession } from '../services/auth.service.js';
+import Swal from 'sweetalert2';
 
 export const renderRouter = async () => {
     const app = document.getElementById('app');
     if (!app) return console.error('No se encontró el id "app"');
 
     const currentPath = window.location.pathname;
-    
+
     // Si la ruta no existe en el diccionario, renderiza notFound
     const route = routes[currentPath] ?? { render: renderNotFound };
 
@@ -16,7 +17,7 @@ export const renderRouter = async () => {
 
     // 1. Guard: Autenticación requerida
     if (route.requiresAuth && !user) {
-        history.pushState(null, null, '/login');
+        history.pushState(null, null, '/');
         return renderRouter();
     }
 
@@ -31,13 +32,20 @@ export const renderRouter = async () => {
         const hasPermission = route.allowedRoles.some(role => user.role && user.role.includes(role));
         if (!hasPermission) {
             console.warn(`Usuario no autorizado para entrar a: ${currentPath}`);
-            alert('No tienes permisos para acceder a esta sección.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Acceso Denegado',
+                text: 'No tienes permisos para acceder a esta sección.',
+                confirmButtonColor: '#3b82f6'
+            });
             history.pushState(null, null, '/dashboard');
             return renderRouter();
         }
     }
     // ---------------------------
-
+    if (route.title) {
+        document.title = route.title;
+    }
     // 4. Renderizamos la vista
     app.innerHTML = route.render();
 
@@ -58,7 +66,7 @@ export const initRouter = () => {
             e.preventDefault();
             const href = link.getAttribute('href');
             history.pushState(null, null, href);
-            renderRouter(); 
+            renderRouter();
         }
     });
 

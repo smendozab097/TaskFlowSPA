@@ -1,4 +1,5 @@
 import { getSession, deleteSession } from '../services/auth.service.js';
+import Swal from 'sweetalert2';
 
 export function renderHeader() {
   const user = getSession();
@@ -9,6 +10,7 @@ export function renderHeader() {
   if (user) {
     const isAdmin = user.role && user.role.includes('ADMIN');
     navLinks = `
+      <a class="rounded-full px-4 py-2 text-sm font-semibold ${currentPath === '/' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-blue-50 hover:text-blue-700'}" href="/" data-link>Inicio</a>
       <a class="rounded-full px-4 py-2 text-sm font-semibold ${currentPath === '/dashboard' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-blue-50 hover:text-blue-700'}" href="/dashboard" data-link>Dashboard</a>
       <a class="rounded-full px-4 py-2 text-sm font-semibold ${currentPath === '/tasks' || currentPath === '/task-form' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-blue-50 hover:text-blue-700'}" href="/tasks" data-link>Tareas</a>
       <a class="rounded-full px-4 py-2 text-sm font-semibold ${currentPath === '/profile' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-blue-50 hover:text-blue-700'}" href="/profile" data-link>Perfil</a>
@@ -38,12 +40,22 @@ export function renderHeader() {
 export function initHeader() {
   const logoutBtn = document.getElementById('logout-btn');
   if (logoutBtn) {
-    logoutBtn.addEventListener('click', (e) => {
+    logoutBtn.addEventListener('click', async (e) => {
       e.preventDefault();
-      const confirmLogout = confirm('¿Estás seguro de que deseas cerrar sesión?');
-      if (confirmLogout) {
+      const result = await Swal.fire({
+        title: '¿Cerrar sesión?',
+        text: '¿Estás seguro de que deseas cerrar sesión?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#94a3b8',
+        confirmButtonText: 'Sí, cerrar',
+        cancelButtonText: 'Cancelar'
+      });
+      
+      if (result.isConfirmed) {
         deleteSession();
-        history.pushState(null, null, '/login');
+        history.pushState(null, null, '/');
         window.dispatchEvent(new Event('popstate'));
       }
     });

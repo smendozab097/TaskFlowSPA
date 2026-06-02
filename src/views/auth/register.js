@@ -1,5 +1,6 @@
 import { createUser } from "../../services/users.service.js";
 import { createSession } from "../../services/auth.service.js";
+import Swal from 'sweetalert2';
 
 export function renderRegister() {
   return `
@@ -85,27 +86,31 @@ export function initRegister() {
         role: [data.get('role')]
       };
 
-      console.log('Usuario a registrar:', newUser);
-
       try {
         await createUser(newUser);
 
         registerForm.reset();
         
-        // Logueamos automáticamente al usuario
         createSession(newUser);
-
-        alert('Registro exitoso e inicio de sesión automático.');
         
-        // Cambiamos la URL
-        history.pushState(null, null, '/dashboard');
-        
-        // Disparamos el evento para que el enrutador haga el cambio de HTML
-        window.dispatchEvent(new Event('popstate'));
+        Swal.fire({
+          icon: 'success',
+          title: '¡Bienvenido!',
+          text: 'Registro exitoso e inicio de sesión automático.',
+          timer: 2000,
+          showConfirmButton: false
+        }).then(() => {
+          history.pushState(null, null, '/dashboard');
+          window.dispatchEvent(new Event('popstate'));
+        });
 
       } catch (error) {
         console.error('Error al registrar usuario:', error);
-        alert('Ocurrio un problema al registrar la cuenta.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrio un problema al registrar la cuenta.'
+        });
       }
     });
   }

@@ -1,6 +1,26 @@
 import { renderHeader, initHeader } from '../components/header.js';
+import { getSession } from '../services/auth.service.js';
 
 export function renderHome() {
+  const user = getSession();
+  const isAdmin = user && user.role && user.role.includes('ADMIN');
+
+  let callToAction = '';
+  if (user) {
+    callToAction = `
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-200 hover:bg-blue-500" href="/dashboard" data-link>Ir a mi Dashboard</a>
+      </div>
+    `;
+  } else {
+    callToAction = `
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-200 hover:bg-blue-500" href="/login" data-link>Iniciar sesion</a>
+        <a class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-6 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50" href="/register" data-link>Crear cuenta</a>
+      </div>
+    `;
+  }
+
   return `
     ${renderHeader()}
 
@@ -15,10 +35,7 @@ export function renderHome() {
             TaskFlowSPA presenta el recorrido principal del proyecto con una interfaz uniforme, amable y lista para convertirse
             luego en una SPA real con autenticacion, roles, permisos y CRUD de tareas.
           </p>
-          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-200 hover:bg-blue-500" href="/login" data-link>Iniciar sesion</a>
-            <a class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-6 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50" href="/register" data-link>Crear cuenta</a>
-          </div>
+          ${callToAction}
         </div>
 
         <section class="rounded-[2rem] border border-blue-100 bg-white p-8 shadow-xl shadow-blue-100/70">
@@ -36,10 +53,12 @@ export function renderHome() {
               <p class="text-sm font-semibold text-blue-600">Mi perfil</p>
               <p class="mt-2 text-sm text-slate-600">Actualizar cuenta y datos personales.</p>
             </a>
+            ${isAdmin ? `
             <a class="rounded-3xl bg-sky-50 p-5 hover:bg-sky-100" href="/admin" data-link>
               <p class="text-sm font-semibold text-blue-600">Admin</p>
               <p class="mt-2 text-sm text-slate-600">Gestion de usuarios y roles.</p>
             </a>
+            ` : ''}
           </div>
         </section>
       </section>

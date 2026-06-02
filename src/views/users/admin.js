@@ -1,5 +1,6 @@
-import { getUsers, deleteUser } from '../../services/users.service.js';
+import { getUsers, deleteUser, updateUser } from '../../services/users.service.js';
 import { renderHeader, initHeader } from '../../components/header.js';
+import Swal from 'sweetalert2';
 
 export const renderAdmin = () => {
     return `
@@ -35,6 +36,8 @@ export const renderAdmin = () => {
     </main>`;
 }
 
+import { initCustomDropdown } from '../../utils/dropdown.js';
+
 export async function initAdmin() {
   initHeader();
 
@@ -51,6 +54,7 @@ export async function initAdmin() {
     }
 
     users.forEach(user => {
+      const userRole = user.role || 'USER';
       const userHTML = `
         <div class="rounded-2xl bg-blue-50 p-4">
           <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -59,7 +63,16 @@ export async function initAdmin() {
               <p class="text-sm text-slate-500">${user.email}</p>
             </div>
             <div class="flex gap-2 items-center">
-              <span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-blue-700">${user.role || 'USER'}</span>
+              <div class="relative custom-dropdown" data-id="${user.id}">
+                <button class="dropdown-btn rounded-full bg-white px-3 py-1 text-xs font-bold text-blue-700 border border-blue-200 focus:outline-none hover:bg-blue-50 flex items-center gap-1 cursor-pointer">
+                  <span class="dropdown-value">${userRole}</span>
+                  <svg class="w-3 h-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div class="dropdown-menu hidden absolute right-0 md:right-auto md:left-0 mt-2 w-28 rounded-2xl bg-white shadow-xl shadow-blue-100 border border-blue-50 z-10 overflow-hidden py-1">
+                  <button class="dropdown-option w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition-colors" data-value="USER">USER</button>
+                  <button class="dropdown-option w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition-colors" data-value="ADMIN">ADMIN</button>
+                </div>
+              </div>
               <button class="delete-user-btn rounded-full border border-red-200 px-3 py-1 text-xs font-semibold text-red-600 hover:bg-white cursor-pointer" data-id="${user.id}">Eliminar</button>
             </div>
           </div>
@@ -68,19 +81,65 @@ export async function initAdmin() {
       usersContainer.innerHTML += userHTML;
     });
 
+    initCustomDropdown('.custom-dropdown', async (newRole, dropdown) => {
+      const valueSpan = dropdown.querySelector('.dropdown-value');
+      const userId = dropdown.getAttribute('data-id');
+
+      if (newRole === valueSpan.textContent) return;
+
+      const originalRole = valueSpan.textContent;
+      valueSpan.textContent = '...';
+
+      const userToUpdate = users.find(u => u.id === userId);
+      if (userToUpdate) {
+        try {
+          userToUpdate.role = newRole;
+          await updateUser(userId, userToUpdate);
+          valueSpan.textContent = newRole;
+        } catch (error) {
+          console.error('Error al actualizar rol:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo actualizar el rol del usuario.'
+          });
+          valueSpan.textContent = originalRole;
+        }
+      }
+    });
+
     document.querySelectorAll('.delete-user-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         const userId = e.target.getAttribute('data-id');
-        const confirmDelete = confirm('¿Seguro que deseas eliminar a este usuario?');
+        const result = await Swal.fire({
+          title: '¿Eliminar usuario?',
+          text: '¿Seguro que deseas eliminar a este usuario?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#ef4444',
+          cancelButtonColor: '#94a3b8',
+          confirmButtonText: 'Sí, eliminar',
+          cancelButtonText: 'Cancelar'
+        });
         
-        if (confirmDelete) {
+        if (result.isConfirmed) {
           try {
             await deleteUser(userId);
-            alert('Usuario eliminado correctamente.');
+            Swal.fire({
+              icon: 'success',
+              title: 'Eliminado',
+              text: 'Usuario eliminado correctamente.',
+              timer: 1500,
+              showConfirmButton: false
+            });
             await initAdmin();
           } catch (error) {
             console.error('Error al eliminar usuario:', error);
-            alert('No se pudo eliminar al usuario.');
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'No se pudo eliminar al usuario.'
+            });
           }
         }
       });

@@ -1,8 +1,9 @@
 import { getUsers } from '../../services/users.service.js';
 import { createSession } from '../../services/auth.service.js';
+import Swal from 'sweetalert2';
 
 export const renderLogin = () => {
-    return `
+  return `
     <main class="grid min-h-screen lg:grid-cols-[1fr_0.95fr]">
       <section class="flex items-center justify-center px-6 py-10">
         <div class="w-full max-w-xl rounded-[2rem] border border-blue-100 bg-white p-8 shadow-xl shadow-blue-100/70">
@@ -66,22 +67,30 @@ export function initLogin() {
 
         if (userMatch) {
           console.log('Login exitoso:', userMatch);
-          
+
           // Guardamos la sesion activa usando el servicio
           createSession(userMatch);
-          
+
           loginForm.reset();
 
           history.pushState(null, null, '/dashboard');
           window.dispatchEvent(new Event('popstate'));
-          
+
         } else {
           console.error('Credenciales incorrectas');
-          alert('Correo o contrasena incorrectos. Intentalo de nuevo.');
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Correo o contrasena incorrectos. Intentalo de nuevo.'
+          });
         }
       } catch (error) {
         console.error('Error al conectar con la API:', error);
-        alert('Hubo un problema de conexion. Asegurate de que el servidor este encendido.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error de conexión',
+          text: 'Hubo un problema de conexion. Asegurate de que el servidor este encendido.'
+        });
       }
     });
   }

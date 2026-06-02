@@ -1,5 +1,6 @@
 import { getSession } from '../services/auth.service.js';
 import { renderHeader, initHeader } from '../components/header.js';
+import { getTasks } from '../services/tasks.service.js';
 
 export const renderDashboard = () => {
     return `
@@ -15,15 +16,15 @@ export const renderDashboard = () => {
       <section class="mt-8 grid gap-4 md:grid-cols-3">
         <article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50">
           <p class="text-sm text-slate-500">Tareas activas</p>
-          <p class="mt-3 text-4xl font-black text-blue-700">12</p>
+          <p id="active-tasks-count" class="mt-3 text-4xl font-black text-blue-700">...</p>
         </article>
         <article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50">
           <p class="text-sm text-slate-500">Completadas</p>
-          <p class="mt-3 text-4xl font-black text-blue-700">28</p>
+          <p id="completed-tasks-count" class="mt-3 text-4xl font-black text-blue-700">...</p>
         </article>
         <article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50">
           <p class="text-sm text-slate-500">Pendientes hoy</p>
-          <p class="mt-3 text-4xl font-black text-blue-700">4</p>
+          <p id="pending-tasks-count" class="mt-3 text-4xl font-black text-blue-700">...</p>
         </article>
       </section>
 
@@ -49,16 +50,40 @@ export const renderDashboard = () => {
     `;
 }
 
-export function initDashboard() {
+export async function initDashboard() {
   initHeader();
 
   const welcomeHeading = document.getElementById('welcome-heading');
+  const activeTasksCount = document.getElementById('active-tasks-count');
+  const completedTasksCount = document.getElementById('completed-tasks-count');
+  const pendingTasksCount = document.getElementById('pending-tasks-count');
+
   const user = getSession();
 
   if (user) {
     if (welcomeHeading && user.name) {
       welcomeHeading.textContent = `Bienvenido, ${user.name}.`;
     }
+    
+    try {
+      const isAdmin = user.role && user.role.includes('ADMIN');
+      const tasks = isAdmin ? await getTasks() : await getTasks(user.id);
+      
+      const total = tasks.length;
+      const completed = tasks.filter(t => t.status === 'Completada').length;
+      const pending = total - completed;
+      
+      if (activeTasksCount) activeTasksCount.textContent = total;
+      if (completedTasksCount) completedTasksCount.textContent = completed;
+      if (pendingTasksCount) pendingTasksCount.textContent = pending;
+      
+    } catch (error) {
+      console.error('Error al cargar las tareas para el dashboard:', error);
+      if (activeTasksCount) activeTasksCount.textContent = '-';
+      if (completedTasksCount) completedTasksCount.textContent = '-';
+      if (pendingTasksCount) pendingTasksCount.textContent = '-';
+    }
+    
   } else {
     console.warn('No hay ninguna sesión activa.');
   }

@@ -1,6 +1,7 @@
 import { updateUser, deleteUser } from '../../services/users.service.js';
 import { getSession, deleteSession, createSession } from '../../services/auth.service.js';
 import { renderHeader, initHeader } from '../../components/header.js';
+import Swal from 'sweetalert2';
 
 export const renderProfile = () => {
     return `
@@ -84,30 +85,60 @@ export function initProfile() {
         createSession(updatedUser);
         
         document.getElementById('password-new').value = '';
-        alert('Perfil actualizado correctamente.');
+        Swal.fire({
+          icon: 'success',
+          title: 'Actualizado',
+          text: 'Perfil actualizado correctamente.',
+          timer: 1500,
+          showConfirmButton: false
+        });
       } catch (error) {
         console.error('Error al actualizar:', error);
-        alert('No se pudo actualizar el perfil. Verifica tu conexion al servidor.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo actualizar el perfil. Verifica tu conexion al servidor.'
+        });
       }
     });
 
     if (deleteBtn) {
       deleteBtn.addEventListener('click', async () => {
-        const isConfirmed = confirm('¿Seguro que deseas eliminar tu cuenta? Esta accion no se puede deshacer.');
+        const result = await Swal.fire({
+          title: '¿Eliminar cuenta?',
+          text: '¿Seguro que deseas eliminar tu cuenta? Esta accion no se puede deshacer.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#ef4444',
+          cancelButtonColor: '#94a3b8',
+          confirmButtonText: 'Sí, eliminar',
+          cancelButtonText: 'Cancelar'
+        });
         
-        if (!isConfirmed) return;
+        if (!result.isConfirmed) return;
 
         try {
           await deleteUser(user.id);
           deleteSession();
           
-          alert('Tu cuenta ha sido eliminada.');
-          history.pushState(null, null, '/login');
-          window.dispatchEvent(new Event('popstate'));
+          Swal.fire({
+            icon: 'success',
+            title: 'Eliminada',
+            text: 'Tu cuenta ha sido eliminada.',
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() => {
+            history.pushState(null, null, '/login');
+            window.dispatchEvent(new Event('popstate'));
+          });
           
         } catch (error) {
           console.error('Error al eliminar:', error);
-          alert('Hubo un problema al eliminar la cuenta.');
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Hubo un problema al eliminar la cuenta.'
+          });
         }
       });
     }

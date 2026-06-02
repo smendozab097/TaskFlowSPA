@@ -2,6 +2,7 @@ import { deleteTask, getTasks } from "../../services/tasks.service.js";
 import { getSession } from "../../services/auth.service.js";
 import { getUsers } from "../../services/users.service.js";
 import { renderHeader, initHeader } from "../../components/header.js";
+import Swal from 'sweetalert2';
 
 export const renderTasks = () => {
   return `
@@ -92,22 +93,41 @@ export async function initTasks() {
     deleteButtons.forEach(button => {
       button.addEventListener('click', async (e) => {
         const taskId = e.target.getAttribute('data-id');
-        const confirmDelete = confirm('¿Estas seguro de que deseas eliminar esta tarea?');
+        const result = await Swal.fire({
+          title: '¿Eliminar tarea?',
+          text: '¿Estas seguro de que deseas eliminar esta tarea?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#ef4444',
+          cancelButtonColor: '#94a3b8',
+          confirmButtonText: 'Sí, eliminar',
+          cancelButtonText: 'Cancelar'
+        });
 
-        if (!confirmDelete) return;
+        if (!result.isConfirmed) return;
 
         try {
           console.log('Solicitud para eliminar tarea con ID:', taskId);
           await deleteTask(taskId);
 
           console.log('Tarea eliminada exitosamente.');
-          alert('Tarea eliminada exitosamente.');
+          Swal.fire({
+            icon: 'success',
+            title: 'Eliminada',
+            text: 'Tarea eliminada exitosamente.',
+            timer: 1500,
+            showConfirmButton: false
+          });
 
           await initTasks();
 
         } catch (error) {
           console.error('Error al eliminar la tarea:', error);
-          alert('Ocurrio un error al eliminar la tarea. Por favor, intenta nuevamente.');
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ocurrio un error al eliminar la tarea. Por favor, intenta nuevamente.'
+          });
         }
       });
     });

@@ -1,6 +1,7 @@
 import { createTask, updateTask, getTaskById } from '../../services/tasks.service.js';
 import { getSession } from '../../services/auth.service.js';
 import { renderHeader, initHeader } from '../../components/header.js';
+import Swal from 'sweetalert2';
 
 export const renderTaskForm = () => {
     return `
@@ -73,6 +74,15 @@ export async function initTaskForm() {
 
     try {
       const taskToEdit = await getTaskById(taskId);
+      const user = getSession();
+      const isAdmin = user && user.role && user.role.includes('ADMIN');
+
+      if (taskToEdit.userid !== user.id && !isAdmin) {
+        import('../not-found.js').then(({ renderNotFound }) => {
+          document.getElementById('app').innerHTML = renderNotFound();
+        });
+        return;
+      }
       
       document.getElementById('title').value = taskToEdit.title;
       document.getElementById('description').value = taskToEdit.description;
@@ -82,7 +92,11 @@ export async function initTaskForm() {
       taskForm.classList.remove('hidden');
     } catch (error) {
       console.error('Error al cargar la tarea:', error);
-      alert('Hubo un error al cargar los datos de la tarea. Es posible que no exista.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un error al cargar los datos de la tarea. Es posible que no exista.'
+      });
     }
 
   } else {
@@ -113,11 +127,23 @@ export async function initTaskForm() {
     try {
       if (taskId) {
         await updateTask(taskId, taskData);
-        alert('Tarea actualizada exitosamente.');
+        Swal.fire({
+          icon: 'success',
+          title: 'Actualizada',
+          text: 'Tarea actualizada exitosamente.',
+          timer: 1500,
+          showConfirmButton: false
+        });
       } else {
         taskData.id = crypto.randomUUID();
         await createTask(taskData);
-        alert('Tarea creada exitosamente.');
+        Swal.fire({
+          icon: 'success',
+          title: 'Creada',
+          text: 'Tarea creada exitosamente.',
+          timer: 1500,
+          showConfirmButton: false
+        });
       }
 
       taskForm.reset();
@@ -126,7 +152,11 @@ export async function initTaskForm() {
       
     } catch (error) {
       console.error('Error al guardar la tarea:', error);
-      alert('Ocurrio un error al intentar guardar la tarea.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Ocurrio un error al intentar guardar la tarea.'
+      });
     }
   });
 }
