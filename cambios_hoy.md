@@ -31,3 +31,9 @@ Se eliminaron por completo las ventanas emergentes nativas del navegador, las cu
 - Se instaló e integró la librería **SweetAlert2** en toda la plataforma.
 - Todos los avisos de éxito (inicio de sesión exitoso, creación/edición de tareas, registro completado) ahora aparecen como notificaciones modernas y atractivas que se cierran solas tras unos segundos.
 - Las acciones críticas (como eliminar un usuario, borrar una tarea o dar de baja tu propia cuenta) ahora despliegan ventanas de confirmación seguras, animadas y estilizadas con los colores de la aplicación, elevando enormemente la calidad percibida del sistema.
+
+## 6. Simplificación y Limpieza de Lógica (KISS)
+Se revisó el proyecto para aplicar el principio de simplicidad (KISS) y remover código innecesario.
+- **Rutas Simplificadas**: Se eliminó el uso complejo de `URLSearchParams` al editar tareas. Ahora la aplicación utiliza `sessionStorage` para pasar el ID de la tarea a editar, lo cual es mucho más sencillo y fácil de entender.
+- **Alertas DRY**: Se extrajo la lógica repetitiva de los mensajes de error en los guards del router hacia un nuevo archivo utilitario `src/utils/alerts.js`.
+- **Manejo de Errores Mejorado**: Se incluyó la validación de respuestas HTTP (`response.ok`) en los servicios de tareas para prevenir fallos silenciosos de la API.

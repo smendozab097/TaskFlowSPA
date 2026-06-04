@@ -35,7 +35,7 @@ export const renderDashboard = () => {
             <a class="text-sm font-semibold text-blue-700 hover:text-blue-600" href="/tasks" data-link>Ver tareas</a>
           </div>
           <div class="mt-6 grid gap-4 sm:grid-cols-2">
-            <a class="rounded-3xl bg-blue-50 p-5 hover:bg-blue-100" href="/task-form" data-link>
+            <a class="rounded-3xl bg-blue-50 p-5 hover:bg-blue-100" href="/task-form" data-link onclick="sessionStorage.removeItem('editTaskId')">
               <p class="text-sm font-semibold text-blue-600">Crear</p>
               <h3 class="mt-2 text-lg font-bold text-slate-900">Nueva tarea</h3>
             </a>

@@ -1,7 +1,7 @@
 import routes from './routes.js';
 import { renderNotFound } from '../views/not-found.js';
 import { getSession } from '../services/auth.service.js';
-import Swal from 'sweetalert2';
+import { showAccessDenied } from '../utils/alerts.js';
 
 export const renderRouter = async () => {
     const app = document.getElementById('app');
@@ -17,7 +17,7 @@ export const renderRouter = async () => {
 
     // 1. Guard: Autenticación requerida
     if (route.requiresAuth && !user) {
-        history.pushState(null, null, '/');
+        history.pushState(null, null, '/login');
         return renderRouter();
     }
 
@@ -32,12 +32,7 @@ export const renderRouter = async () => {
         const hasPermission = route.allowedRoles.some(role => user.role && user.role.includes(role));
         if (!hasPermission) {
             console.warn(`Usuario no autorizado para entrar a: ${currentPath}`);
-            Swal.fire({
-                icon: 'warning',
-                title: 'Acceso Denegado',
-                text: 'No tienes permisos para acceder a esta sección.',
-                confirmButtonColor: '#3b82f6'
-            });
+            await showAccessDenied();
             history.pushState(null, null, '/dashboard');
             return renderRouter();
         }

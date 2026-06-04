@@ -6,10 +6,7 @@ export async function getTasks(userid) {
     const url = userid ? `${endpointTask}?userid=${userid}` : endpointTask;
     
     const response = await fetch(url); 
-    // si hay user id usa este: ${endpointTask}?userid=${userid}` 
-    //si no hay user id usa este: endpointTask
-
-    
+    if (!response.ok) throw new Error('API request failed');
     const data = await response.json();
     return data;
 }
@@ -22,11 +19,13 @@ export async function createTask(task) {
         },
         body: JSON.stringify(task)
     });
+    if (!response.ok) throw new Error('API request failed');
     return response;
 }
 
 export async function getTaskById(taskId) {
     const response = await fetch(`${endpointTask}/${taskId}`);
+    if (!response.ok) throw new Error('API request failed');
     const data = await response.json();
     return data;
 }
@@ -39,6 +38,7 @@ export async function updateTask(id, updatedData) {
         },
         body: JSON.stringify(updatedData)
     });
+    if (!response.ok) throw new Error('API request failed');
     return response;
 }
 
@@ -46,5 +46,6 @@ export async function deleteTask(id) {
     const response = await fetch(`${endpointTask}/${id}`, {
         method: "DELETE"
     });
+    if (!response.ok) throw new Error('API request failed');
     return response;
 }

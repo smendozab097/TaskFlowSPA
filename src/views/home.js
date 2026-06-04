@@ -3,7 +3,6 @@ import { getSession } from '../services/auth.service.js';
 
 export function renderHome() {
   const user = getSession();
-  const isAdmin = user && user.role && user.role.includes('ADMIN');
 
   let callToAction = '';
   if (user) {
@@ -53,12 +52,10 @@ export function renderHome() {
               <p class="text-sm font-semibold text-blue-600">Mi perfil</p>
               <p class="mt-2 text-sm text-slate-600">Actualizar cuenta y datos personales.</p>
             </a>
-            ${isAdmin ? `
             <a class="rounded-3xl bg-sky-50 p-5 hover:bg-sky-100" href="/admin" data-link>
               <p class="text-sm font-semibold text-blue-600">Admin</p>
               <p class="mt-2 text-sm text-slate-600">Gestion de usuarios y roles.</p>
             </a>
-            ` : ''}
           </div>
         </section>
       </section>

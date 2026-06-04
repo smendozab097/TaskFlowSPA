@@ -63,8 +63,7 @@ export async function initTaskForm() {
 
   if (!taskForm) return;
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const taskId = urlParams.get('id');
+  const taskId = sessionStorage.getItem('editTaskId');
 
   if (taskId) {
     // MODO EDICION
@@ -147,6 +146,7 @@ export async function initTaskForm() {
       }
 
       taskForm.reset();
+      sessionStorage.removeItem('editTaskId');
       history.pushState(null, null, '/tasks');
       window.dispatchEvent(new Event('popstate'));
       
