@@ -3,7 +3,15 @@ import { getSession } from '../../services/auth.service.js';
 import { renderHeader, initHeader } from '../../components/header.js';
 import Swal from 'sweetalert2';
 
+// ==========================================
+// VISTA FORMULARIO DE TAREAS (task-form.js)
+// Genera el HTML del formulario y maneja la 
+// lógica para crear tareas nuevas o editar
+// tareas existentes basado en sessionStorage.
+// ==========================================
+
 export const renderTaskForm = () => {
+    // Renderiza el HTML principal concatenando la cabecera (Header) y el formulario
     return `
     ${renderHeader()}
 
@@ -53,9 +61,17 @@ export const renderTaskForm = () => {
     </main>`;
 }
 
+// ==========================================
+// INICIALIZAR FORMULARIO (initTaskForm)
+// Comprueba si hay un ID en sessionStorage para 
+// entrar en Modo Edición. De lo contrario,
+// entra en Modo Creación.
+// ==========================================
 export async function initTaskForm() {
+  // Inicializamos eventos de la cabecera
   initHeader();
 
+  // Seleccionamos los elementos del DOM clave
   const taskForm = document.getElementById('task-form');
   const formTitle = document.getElementById('form-title');
   const formDescription = document.getElementById('form-description');
@@ -63,10 +79,13 @@ export async function initTaskForm() {
 
   if (!taskForm) return;
 
+  // Verificamos si existe un ID de tarea pendiente por editar
   const taskId = sessionStorage.getItem('editTaskId');
 
   if (taskId) {
+    // ==========================================
     // MODO EDICION
+    // ==========================================
     formTitle.textContent = 'Editar tarea';
     formDescription.textContent = 'Modifica los detalles de tu tarea existente.';
     submitBtn.textContent = 'Actualizar tarea';
@@ -76,6 +95,7 @@ export async function initTaskForm() {
       const user = getSession();
       const isAdmin = user && user.role && user.role.includes('ADMIN');
 
+      // Evitamos que un usuario edite tareas de otros (salvo que sea ADMIN)
       if (taskToEdit.userid !== user.id && !isAdmin) {
         import('../not-found.js').then(({ renderNotFound }) => {
           document.getElementById('app').innerHTML = renderNotFound();
@@ -83,6 +103,7 @@ export async function initTaskForm() {
         return;
       }
       
+      // Llenamos el formulario con los datos recuperados
       document.getElementById('title').value = taskToEdit.title;
       document.getElementById('description').value = taskToEdit.description;
       document.getElementById('status').value = taskToEdit.status;
@@ -99,7 +120,9 @@ export async function initTaskForm() {
     }
 
   } else {
+    // ==========================================
     // MODO CREACION
+    // ==========================================
     formTitle.textContent = 'Crear nueva tarea';
     formDescription.textContent = 'Registra los detalles para tu nueva tarea.';
     submitBtn.textContent = 'Guardar tarea';
@@ -107,6 +130,10 @@ export async function initTaskForm() {
     taskForm.classList.remove('hidden');
   }
 
+  // ==========================================
+  // EVENTO DE ENVÍO (Submit)
+  // Maneja tanto creación como edición
+  // ==========================================
   taskForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -145,6 +172,7 @@ export async function initTaskForm() {
         });
       }
 
+      // Limpiamos la memoria y redirigimos de vuelta al listado
       taskForm.reset();
       sessionStorage.removeItem('editTaskId');
       history.pushState(null, null, '/tasks');

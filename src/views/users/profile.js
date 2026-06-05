@@ -3,7 +3,15 @@ import { getSession, deleteSession, createSession } from '../../services/auth.se
 import { renderHeader, initHeader } from '../../components/header.js';
 import Swal from 'sweetalert2';
 
+// ==========================================
+// VISTA PERFIL DE USUARIO (profile.js)
+// Genera el HTML y maneja la lógica para
+// que el usuario actualice sus datos personales
+// o elimine su propia cuenta.
+// ==========================================
+
 export const renderProfile = () => {
+    // Renderiza el HTML principal concatenando la cabecera (Header) y el formulario de perfil
     return `
     ${renderHeader()}
 
@@ -52,26 +60,43 @@ export const renderProfile = () => {
     </main>`
 }
 
+// ==========================================
+// INICIALIZAR PERFIL (initProfile)
+// Carga los datos de la sesión actual en el 
+// formulario y asigna los eventos para 
+// actualizar o borrar la cuenta.
+// ==========================================
 export function initProfile() {
+  // Inicializamos eventos de la cabecera
   initHeader();
 
+  // Seleccionamos el formulario y el botón de borrado
   const profileForm = document.getElementById('profile-form');
   const deleteBtn = document.getElementById('delete-account-btn');
   
+  // Obtenemos los datos de sesión activa
   const user = getSession();
   if (!user) return;
 
   if (profileForm) {
+    // ==========================================
+    // LLENADO DEL FORMULARIO
+    // ==========================================
     document.getElementById('name').value = user.name || '';
     document.getElementById('lastname').value = user.lastname || '';
     document.getElementById('profile-email').value = user.email || '';
 
+    // ==========================================
+    // EVENTO DE ACTUALIZACIÓN (Submit)
+    // ==========================================
     profileForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
+      // Recolectamos los nuevos datos ingresados
       const data = new FormData(profileForm);
       const newPassword = data.get('password');
       
+      // Construimos el nuevo objeto de usuario
       const updatedUser = {
         ...user, 
         name: data.get('name').trim(),
@@ -102,8 +127,12 @@ export function initProfile() {
       }
     });
 
+    // ==========================================
+    // EVENTO DE ELIMINACIÓN DE CUENTA
+    // ==========================================
     if (deleteBtn) {
       deleteBtn.addEventListener('click', async () => {
+        // Pedimos confirmación antes de la acción destructiva
         const result = await Swal.fire({
           title: '¿Eliminar cuenta?',
           text: '¿Seguro que deseas eliminar tu cuenta? Esta accion no se puede deshacer.',

@@ -2,7 +2,14 @@ import { getSession } from '../services/auth.service.js';
 import { renderHeader, initHeader } from '../components/header.js';
 import { getTasks } from '../services/tasks.service.js';
 
+// ==========================================
+// VISTA DASHBOARD (dashboard.js)
+// Genera la vista de resumen principal.
+// Muestra contadores de tareas y accesos rápidos.
+// ==========================================
+
 export const renderDashboard = () => {
+    // Renderiza el HTML principal concatenando la cabecera (Header) y el contenido
     return `
     ${renderHeader()}
     
@@ -50,9 +57,17 @@ export const renderDashboard = () => {
     `;
 }
 
+// ==========================================
+// INICIALIZAR DASHBOARD (initDashboard)
+// Se encarga de cargar y calcular las métricas
+// (tareas activas, pendientes, etc.) después de
+// que el HTML ha sido renderizado.
+// ==========================================
 export async function initDashboard() {
+  // Inicializamos eventos de la cabecera
   initHeader();
 
+  // Seleccionamos los elementos del DOM donde inyectaremos los datos
   const welcomeHeading = document.getElementById('welcome-heading');
   const activeTasksCount = document.getElementById('active-tasks-count');
   const completedTasksCount = document.getElementById('completed-tasks-count');
@@ -61,24 +76,28 @@ export async function initDashboard() {
   const user = getSession();
 
   if (user) {
+    // Personalizamos el mensaje de bienvenida con el nombre del usuario
     if (welcomeHeading && user.name) {
       welcomeHeading.textContent = `Bienvenido, ${user.name}.`;
     }
     
     try {
+      // Obtenemos las tareas correspondientes (todas si es ADMIN, o solo las propias si es USER)
       const isAdmin = user.role && user.role.includes('ADMIN');
       const tasks = isAdmin ? await getTasks() : await getTasks(user.id);
       
+      // Calculamos las métricas
       const total = tasks.length;
       const completed = tasks.filter(t => t.status === 'Completada').length;
       const pending = total - completed;
       
+      // Actualizamos los contadores en el HTML
       if (activeTasksCount) activeTasksCount.textContent = total;
       if (completedTasksCount) completedTasksCount.textContent = completed;
       if (pendingTasksCount) pendingTasksCount.textContent = pending;
       
     } catch (error) {
-      console.error('Error al cargar las tareas para el dashboard:', error);
+      // En caso de error (servidor caído), mostramos guiones para evitar confundir al usuario
       if (activeTasksCount) activeTasksCount.textContent = '-';
       if (completedTasksCount) completedTasksCount.textContent = '-';
       if (pendingTasksCount) pendingTasksCount.textContent = '-';

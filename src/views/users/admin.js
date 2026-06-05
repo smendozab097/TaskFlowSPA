@@ -2,7 +2,15 @@ import { getUsers, deleteUser, updateUser } from '../../services/users.service.j
 import { renderHeader, initHeader } from '../../components/header.js';
 import Swal from 'sweetalert2';
 
+// ==========================================
+// VISTA DE ADMINISTRADOR (admin.js)
+// Interfaz exclusiva para usuarios con rol ADMIN.
+// Permite visualizar y gestionar (eliminar, 
+// cambiar roles) a otros usuarios del sistema.
+// ==========================================
+
 export const renderAdmin = () => {
+    // Renderiza el HTML principal concatenando la cabecera (Header)
     return `
     ${renderHeader()}
 
@@ -36,11 +44,20 @@ export const renderAdmin = () => {
     </main>`;
 }
 
+// Importa utilidad para el funcionamiento visual de los menús desplegables
 import { initCustomDropdown } from '../../utils/dropdown.js';
 
+// ==========================================
+// INICIALIZAR PANEL DE ADMIN (initAdmin)
+// Obtiene todos los usuarios, los inyecta en 
+// el HTML y asocia los eventos de borrado y
+// cambio de roles.
+// ==========================================
 export async function initAdmin() {
+  // Inicializamos eventos de la cabecera
   initHeader();
 
+  // Contenedor principal de usuarios
   const usersContainer = document.getElementById('admin-users-container');
   if (!usersContainer) return;
 
@@ -53,6 +70,9 @@ export async function initAdmin() {
       return;
     }
 
+    // ==========================================
+    // RENDERIZADO DE LA LISTA DE USUARIOS
+    // ==========================================
     users.forEach(user => {
       const userRole = user.role || 'USER';
       const userHTML = `
@@ -81,6 +101,9 @@ export async function initAdmin() {
       usersContainer.innerHTML += userHTML;
     });
 
+    // ==========================================
+    // EVENTO: CAMBIAR ROL (Dropdown)
+    // ==========================================
     initCustomDropdown('.custom-dropdown', async (newRole, dropdown) => {
       const valueSpan = dropdown.querySelector('.dropdown-value');
       const userId = dropdown.getAttribute('data-id');
@@ -108,6 +131,9 @@ export async function initAdmin() {
       }
     });
 
+    // ==========================================
+    // EVENTO: ELIMINAR USUARIO
+    // ==========================================
     document.querySelectorAll('.delete-user-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         const userId = e.target.getAttribute('data-id');

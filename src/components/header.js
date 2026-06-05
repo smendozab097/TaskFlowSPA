@@ -1,12 +1,19 @@
 import { getSession, deleteSession } from '../services/auth.service.js';
+import { initThemeToggle } from '../utils/theme.js';
 import Swal from 'sweetalert2';
 
+// ==========================================
+// RENDERIZAR CABECERA (renderHeader)
+// Genera dinámicamente el HTML del menú de 
+// navegación superior según la sesión.
+// ==========================================
 export function renderHeader() {
   const user = getSession();
   const currentPath = window.location.pathname;
 
   let navLinks = '';
 
+  // Determina qué enlaces mostrar si el usuario está logueado
   if (user) {
     const isAdmin = user.role && user.role.includes('ADMIN');
     navLinks = `
@@ -41,24 +48,21 @@ export function renderHeader() {
   `;
 }
 
+// ==========================================
+// INICIALIZACIÓN DE LA CABECERA (initHeader)
+// Asigna eventos a los botones del menú una
+// vez que el HTML está inyectado en el DOM.
+// ==========================================
 export function initHeader() {
-  const themeToggleBtn = document.getElementById('theme-toggle');
-  if (themeToggleBtn) {
-    themeToggleBtn.addEventListener('click', () => {
-      if (document.documentElement.classList.contains('dark')) {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-      } else {
-        document.documentElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-      }
-    });
-  }
+  // Inicializa el evento del botón de modo oscuro (importado desde utils/theme.js)
+  initThemeToggle();
 
+  // Inicializa el evento del botón de cerrar sesión
   const logoutBtn = document.getElementById('logout-btn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', async (e) => {
       e.preventDefault();
+      // Muestra alerta de confirmación
       const result = await Swal.fire({
         title: '¿Cerrar sesión?',
         text: '¿Estás seguro de que deseas cerrar sesión?',
@@ -69,7 +73,7 @@ export function initHeader() {
         confirmButtonText: 'Sí, cerrar',
         cancelButtonText: 'Cancelar'
       });
-
+      // Si el usuario confirma, se elimina la sesión y redirige al inicio
       if (result.isConfirmed) {
         deleteSession();
         history.pushState(null, null, '/');

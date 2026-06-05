@@ -2,7 +2,14 @@ import { getUsers } from '../../services/users.service.js';
 import { createSession } from '../../services/auth.service.js';
 import Swal from 'sweetalert2';
 
+// ==========================================
+// VISTA LOGIN (login.js)
+// Genera el formulario de inicio de sesión y
+// procesa la autenticación contra la "API".
+// ==========================================
+
 export const renderLogin = () => {
+  // Retorna el HTML del formulario (pantalla dividida en PC)
   return `
     <main class="grid min-h-screen lg:grid-cols-[1fr_0.95fr]">
       <section class="flex items-center justify-center px-6 py-10">
@@ -48,6 +55,11 @@ export const renderLogin = () => {
     </main>`;
 }
 
+// ==========================================
+// INICIALIZAR LOGIN (initLogin)
+// Escucha el envío del formulario, valida
+// las credenciales y crea la sesión.
+// ==========================================
 export function initLogin() {
   const loginForm = document.getElementById('login-form');
 
@@ -62,21 +74,27 @@ export function initLogin() {
       console.log('Intentando iniciar sesion con:', email);
 
       try {
+        // Obtenemos todos los usuarios y buscamos coincidencia
         const users = await getUsers();
         const userMatch = users.find(u => u.email === email && u.password === password);
 
         if (userMatch) {
           console.log('Login exitoso:', userMatch);
 
-          // Guardamos la sesion activa usando el servicio
+          // Guardamos la sesión activa en el Storage (localStorage por defecto)
           createSession(userMatch);
 
+          // Limpiamos el formulario
           loginForm.reset();
 
+          // Navegamos al dashboard mediante History API
           history.pushState(null, null, '/dashboard');
           window.dispatchEvent(new Event('popstate'));
 
         } else {
+          // ==========================================
+          // ERROR DE CREDENCIALES
+          // ==========================================
           console.error('Credenciales incorrectas');
           Swal.fire({
             icon: 'error',

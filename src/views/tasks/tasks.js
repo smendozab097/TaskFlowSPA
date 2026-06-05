@@ -4,7 +4,14 @@ import { getUsers } from "../../services/users.service.js";
 import { renderHeader, initHeader } from "../../components/header.js";
 import Swal from 'sweetalert2';
 
+// ==========================================
+// VISTA LISTADO DE TAREAS (tasks.js)
+// Genera la vista principal donde el usuario
+// puede ver, editar y eliminar sus tareas.
+// ==========================================
+
 export const renderTasks = () => {
+  // Renderiza el HTML principal concatenando la cabecera (Header) y el contenedor de tareas
   return `
     ${renderHeader()}
 
@@ -27,9 +34,17 @@ export const renderTasks = () => {
     `;
 }
 
+// ==========================================
+// INICIALIZAR LISTADO (initTasks)
+// Obtiene las tareas desde el backend (JSON Server)
+// y las pinta en el contenedor correspondiente.
+// Además, asigna los eventos para eliminar tareas.
+// ==========================================
 export async function initTasks() {
+  // Inicializamos eventos de la cabecera
   initHeader();
 
+  // Obtenemos el contenedor donde inyectaremos cada tarea
   const tasksContainer = document.getElementById('tasks-container');
   if (!tasksContainer) return;
 
@@ -60,8 +75,9 @@ export async function initTasks() {
       return;
     }
 
+    // Generamos el HTML para cada tarea iterando el arreglo
     tasks.forEach(task => {
-      // Cruzamos los datos para obtener el nombre del propietario
+      // Si somos ADMIN, Cruzamos los datos para obtener el nombre del propietario
       let ownerInfo = '';
       if (isAdmin) {
         const owner = usersList.find(u => u.id === task.userid);
@@ -89,10 +105,15 @@ export async function initTasks() {
       tasksContainer.innerHTML += taskHTML;
     });
 
+    // ==========================================
+    // MANEJO DE ELIMINACIÓN DE TAREAS
+    // ==========================================
     const deleteButtons = document.querySelectorAll('.delete-btn');
     deleteButtons.forEach(button => {
       button.addEventListener('click', async (e) => {
         const taskId = e.target.getAttribute('data-id');
+        
+        // Confirmación visual con SweetAlert antes de borrar
         const result = await Swal.fire({
           title: '¿Eliminar tarea?',
           text: '¿Estas seguro de que deseas eliminar esta tarea?',
