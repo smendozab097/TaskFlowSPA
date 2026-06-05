@@ -2,14 +2,13 @@ import { getUsers } from '../../services/users.service.js';
 import { createSession } from '../../services/auth.service.js';
 import Swal from 'sweetalert2';
 
-// ==========================================
-// VISTA LOGIN (login.js)
-// Genera el formulario de inicio de sesión y
-// procesa la autenticación contra la "API".
-// ==========================================
+// ----------------------------------------
+// VISTA LOGIN
+// Genera el formulario de inicio de sesión y procesa la autenticación.
+// ----------------------------------------
 
 export const renderLogin = () => {
-  // Retorna el HTML del formulario (pantalla dividida en PC)
+  // Retorna el HTML del formulario
   return `
     <main class="grid min-h-screen lg:grid-cols-[1fr_0.95fr]">
       <section class="flex items-center justify-center px-6 py-10">
@@ -55,11 +54,10 @@ export const renderLogin = () => {
     </main>`;
 }
 
-// ==========================================
-// INICIALIZAR LOGIN (initLogin)
-// Escucha el envío del formulario, valida
-// las credenciales y crea la sesión.
-// ==========================================
+// ----------------------------------------
+// INICIALIZAR LOGIN
+// Escucha el envío del formulario, valida las credenciales y crea la sesión.
+// ----------------------------------------
 export function initLogin() {
   const loginForm = document.getElementById('login-form');
 
@@ -74,32 +72,34 @@ export function initLogin() {
       console.log('Intentando iniciar sesion con:', email);
 
       try {
-        // Obtenemos todos los usuarios y buscamos coincidencia
+        // Primero obtenemos todos los usuarios y buscamos coincidencia
         const users = await getUsers();
         const userMatch = users.find(u => u.email === email && u.password === password);
 
         if (userMatch) {
           console.log('Login exitoso:', userMatch);
 
-          // Guardamos la sesión activa en el Storage (localStorage por defecto)
+          // Si el login es exitoso, se guarda la sesión activa en el Storage
           createSession(userMatch);
 
-          // Limpiamos el formulario
+          // Se limpia el formulario
           loginForm.reset();
 
           // Navegamos al dashboard mediante History API
+          // Cambia la URL sin recargar la página y dispara manualmente el evento 'popstate'
+          // para que el enrutador de la SPA detecte el cambio y renderice la nueva vista.
           history.pushState(null, null, '/dashboard');
           window.dispatchEvent(new Event('popstate'));
 
         } else {
-          // ==========================================
+          // ----------------------------------------
           // ERROR DE CREDENCIALES
-          // ==========================================
+          // ----------------------------------------
           console.error('Credenciales incorrectas');
           Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'Correo o contrasena incorrectos. Intentalo de nuevo.'
+            text: 'Correo o contraseña incorrectos. Intentalo de nuevo.'
           });
         }
       } catch (error) {

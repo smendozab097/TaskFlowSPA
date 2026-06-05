@@ -2,16 +2,16 @@ import { getUsers, deleteUser, updateUser } from '../../services/users.service.j
 import { renderHeader, initHeader } from '../../components/header.js';
 import Swal from 'sweetalert2';
 
-// ==========================================
+// ----------------------------------------
 // VISTA DE ADMINISTRADOR (admin.js)
 // Interfaz exclusiva para usuarios con rol ADMIN.
 // Permite visualizar y gestionar (eliminar, 
 // cambiar roles) a otros usuarios del sistema.
-// ==========================================
+// ----------------------------------------
 
 export const renderAdmin = () => {
-    // Renderiza el HTML principal concatenando la cabecera (Header)
-    return `
+  // Renderiza el HTML principal concatenando la cabecera (Header)
+  return `
     ${renderHeader()}
 
     <main class="mx-auto max-w-7xl px-6 py-10">
@@ -47,14 +47,12 @@ export const renderAdmin = () => {
 // Importa utilidad para el funcionamiento visual de los menús desplegables
 import { initCustomDropdown } from '../../utils/dropdown.js';
 
-// ==========================================
+// ----------------------------------------
 // INICIALIZAR PANEL DE ADMIN (initAdmin)
 // Obtiene todos los usuarios, los inyecta en 
-// el HTML y asocia los eventos de borrado y
-// cambio de roles.
-// ==========================================
+// el HTML y asocia los eventos de borrado y cambio de roles.
+// ----------------------------------------
 export async function initAdmin() {
-  // Inicializamos eventos de la cabecera
   initHeader();
 
   // Contenedor principal de usuarios
@@ -70,9 +68,9 @@ export async function initAdmin() {
       return;
     }
 
-    // ==========================================
+    // ----------------------------------------
     // RENDERIZADO DE LA LISTA DE USUARIOS
-    // ==========================================
+    // ----------------------------------------
     users.forEach(user => {
       const userRole = user.role || 'USER';
       const userHTML = `
@@ -101,23 +99,32 @@ export async function initAdmin() {
       usersContainer.innerHTML += userHTML;
     });
 
-    // ==========================================
+
+    // ----------------------------------------
     // EVENTO: CAMBIAR ROL (Dropdown)
-    // ==========================================
+    // ----------------------------------------
+
+    // Inicializa el dropdown personalizado de roles y define la acción a ejecutar tras cambiar la selección
     initCustomDropdown('.custom-dropdown', async (newRole, dropdown) => {
       const valueSpan = dropdown.querySelector('.dropdown-value');
       const userId = dropdown.getAttribute('data-id');
 
+      // Evita peticiones innecesarias si el rol seleccionado es el mismo que ya tiene el usuario
       if (newRole === valueSpan.textContent) return;
 
+      // Respalda el rol original por si ocurre un error y muestra un indicador de carga
       const originalRole = valueSpan.textContent;
       valueSpan.textContent = '...';
 
+      // Busca al usuario correspondiente en el listado local
       const userToUpdate = users.find(u => u.id === userId);
       if (userToUpdate) {
         try {
+          // Actualiza el rol en el objeto local y lo persiste a través del servicio
           userToUpdate.role = newRole;
           await updateUser(userId, userToUpdate);
+
+          // Si la actualización es exitosa, se refleja el nuevo rol en la interfaz
           valueSpan.textContent = newRole;
         } catch (error) {
           console.error('Error al actualizar rol:', error);
@@ -126,14 +133,15 @@ export async function initAdmin() {
             title: 'Error',
             text: 'No se pudo actualizar el rol del usuario.'
           });
+          // En caso de fallo en el servidor, revierte el texto al rol anterior
           valueSpan.textContent = originalRole;
         }
       }
     });
 
-    // ==========================================
+    // ----------------------------------------
     // EVENTO: ELIMINAR USUARIO
-    // ==========================================
+    // ----------------------------------------
     document.querySelectorAll('.delete-user-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         const userId = e.target.getAttribute('data-id');
@@ -147,7 +155,7 @@ export async function initAdmin() {
           confirmButtonText: 'Sí, eliminar',
           cancelButtonText: 'Cancelar'
         });
-        
+
         if (result.isConfirmed) {
           try {
             await deleteUser(userId);

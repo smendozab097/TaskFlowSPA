@@ -3,16 +3,16 @@ import { getSession, deleteSession, createSession } from '../../services/auth.se
 import { renderHeader, initHeader } from '../../components/header.js';
 import Swal from 'sweetalert2';
 
-// ==========================================
-// VISTA PERFIL DE USUARIO (profile.js)
+// ----------------------------------------
+// VISTA PERFIL DE USUARIO
 // Genera el HTML y maneja la lógica para
 // que el usuario actualice sus datos personales
 // o elimine su propia cuenta.
-// ==========================================
+// ----------------------------------------
 
 export const renderProfile = () => {
-    // Renderiza el HTML principal concatenando la cabecera (Header) y el formulario de perfil
-    return `
+  // Renderiza el HTML del perfil y el formulario
+  return `
     ${renderHeader()}
 
     <main class="mx-auto max-w-5xl px-6 py-10">
@@ -60,12 +60,12 @@ export const renderProfile = () => {
     </main>`
 }
 
-// ==========================================
+// ----------------------------------------
 // INICIALIZAR PERFIL (initProfile)
 // Carga los datos de la sesión actual en el 
 // formulario y asigna los eventos para 
 // actualizar o borrar la cuenta.
-// ==========================================
+// ----------------------------------------
 export function initProfile() {
   // Inicializamos eventos de la cabecera
   initHeader();
@@ -73,32 +73,32 @@ export function initProfile() {
   // Seleccionamos el formulario y el botón de borrado
   const profileForm = document.getElementById('profile-form');
   const deleteBtn = document.getElementById('delete-account-btn');
-  
+
   // Obtenemos los datos de sesión activa
   const user = getSession();
   if (!user) return;
 
   if (profileForm) {
-    // ==========================================
+    // ----------------------------------------
     // LLENADO DEL FORMULARIO
-    // ==========================================
+    // ----------------------------------------
     document.getElementById('name').value = user.name || '';
     document.getElementById('lastname').value = user.lastname || '';
     document.getElementById('profile-email').value = user.email || '';
 
-    // ==========================================
+    // ----------------------------------------
     // EVENTO DE ACTUALIZACIÓN (Submit)
-    // ==========================================
+    // ----------------------------------------
     profileForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       // Recolectamos los nuevos datos ingresados
       const data = new FormData(profileForm);
       const newPassword = data.get('password');
-      
+
       // Construimos el nuevo objeto de usuario
       const updatedUser = {
-        ...user, 
+        ...user,
         name: data.get('name').trim(),
         lastname: data.get('lastname').trim(),
         email: data.get('email').trim().toLowerCase(),
@@ -108,7 +108,7 @@ export function initProfile() {
       try {
         await updateUser(user.id, updatedUser);
         createSession(updatedUser);
-        
+
         document.getElementById('password-new').value = '';
         Swal.fire({
           icon: 'success',
@@ -127,9 +127,9 @@ export function initProfile() {
       }
     });
 
-    // ==========================================
+    // ----------------------------------------
     // EVENTO DE ELIMINACIÓN DE CUENTA
-    // ==========================================
+    // ----------------------------------------
     if (deleteBtn) {
       deleteBtn.addEventListener('click', async () => {
         // Pedimos confirmación antes de la acción destructiva
@@ -143,13 +143,13 @@ export function initProfile() {
           confirmButtonText: 'Sí, eliminar',
           cancelButtonText: 'Cancelar'
         });
-        
+
         if (!result.isConfirmed) return;
 
         try {
           await deleteUser(user.id);
           deleteSession();
-          
+
           Swal.fire({
             icon: 'success',
             title: 'Eliminada',
@@ -160,7 +160,7 @@ export function initProfile() {
             history.pushState(null, null, '/login');
             window.dispatchEvent(new Event('popstate'));
           });
-          
+
         } catch (error) {
           console.error('Error al eliminar:', error);
           Swal.fire({

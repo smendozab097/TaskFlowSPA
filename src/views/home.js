@@ -1,28 +1,27 @@
 import { renderHeader, initHeader } from '../components/header.js';
 import { getSession } from '../services/auth.service.js';
 
-// ==========================================
-// VISTA HOME (home.js)
+// ----------------------------------------
+// VISTA HOME
 // Genera la vista principal (Landing Page).
-// Muestra información general y botones
-// dinámicos según el estado de la sesión.
-// ==========================================
+// Muestra información general y botones dinámicos según el estado de la sesión.
+// ----------------------------------------
 
 export function renderHome() {
   const user = getSession();
 
   let callToAction = '';
-  
+
   // Determina el bloque "Call to Action" (Llamado a la acción)
   if (user) {
-    // Si el usuario ESTÁ logueado, le ofrecemos ir a su Dashboard directamente
+    // Si el usuario ESTÁ logueado, tiene la opción de ir a su Dashboard directamente
     callToAction = `
       <div class="mt-8 flex flex-col gap-3 sm:flex-row">
         <a class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-200 dark:shadow-black/50 hover:bg-blue-500 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl active:scale-95" href="/dashboard" data-link>Ir a mi Dashboard</a>
       </div>
     `;
   } else {
-    // Si el usuario NO está logueado, le ofrecemos iniciar sesión o registrarse
+    // Si el usuario NO está logueado, tiene la opción de iniciar sesión o registrarse
     callToAction = `
       <div class="mt-8 flex flex-col gap-3 sm:flex-row">
         <a class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-200 dark:shadow-black/50 hover:bg-blue-500 dark:hover:bg-blue-500 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl active:scale-95" href="/login" data-link>Iniciar sesion</a>
@@ -75,11 +74,10 @@ export function renderHome() {
   `;
 }
 
-// ==========================================
+// ----------------------------------------
 // INICIALIZAR HOME (initHome)
-// Se ejecuta después de que el HTML de Home
-// se inserta en la pantalla.
-// ==========================================
+// Se ejecuta después de que el HTML de Home se inserta en la pantalla.
+// ----------------------------------------
 export function initHome() {
   // Inicializamos los eventos de la barra de navegación (Header)
   initHeader();

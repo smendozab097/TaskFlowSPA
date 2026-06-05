@@ -2,17 +2,16 @@ import { getSession } from '../services/auth.service.js';
 import { renderHeader, initHeader } from '../components/header.js';
 import { getTasks } from '../services/tasks.service.js';
 
-// ==========================================
-// VISTA DASHBOARD (dashboard.js)
+// ----------------------------------------
+// VISTA DASHBOARD
 // Genera la vista de resumen principal.
 // Muestra contadores de tareas y accesos rápidos.
-// ==========================================
+// ----------------------------------------
 
 export const renderDashboard = () => {
-    // Renderiza el HTML principal concatenando la cabecera (Header) y el contenido
-    return `
+  // Renderiza el Dashboard
+  return `
     ${renderHeader()}
-    
     <main class="mx-auto max-w-6xl px-6 py-10">
       <section class="rounded-[2rem] bg-blue-600 dark:bg-slate-800 border dark:border-slate-700 px-8 py-10 text-white shadow-lg shadow-blue-300 dark:shadow-black/50 transition-colors duration-300">
         <p class="text-sm font-semibold uppercase tracking-[0.3em] text-blue-100 dark:text-blue-300">Dashboard principal</p>
@@ -57,12 +56,11 @@ export const renderDashboard = () => {
     `;
 }
 
-// ==========================================
+// ----------------------------------------
 // INICIALIZAR DASHBOARD (initDashboard)
-// Se encarga de cargar y calcular las métricas
-// (tareas activas, pendientes, etc.) después de
-// que el HTML ha sido renderizado.
-// ==========================================
+// Se encarga de cargar y calcular las métricas (tareas activas, pendientes, etc.)
+// después de que el HTML ha sido renderizado.
+// ----------------------------------------
 export async function initDashboard() {
   // Inicializamos eventos de la cabecera
   initHeader();
@@ -80,29 +78,29 @@ export async function initDashboard() {
     if (welcomeHeading && user.name) {
       welcomeHeading.textContent = `Bienvenido, ${user.name}.`;
     }
-    
+
     try {
       // Obtenemos las tareas correspondientes (todas si es ADMIN, o solo las propias si es USER)
       const isAdmin = user.role && user.role.includes('ADMIN');
       const tasks = isAdmin ? await getTasks() : await getTasks(user.id);
-      
+
       // Calculamos las métricas
       const total = tasks.length;
       const completed = tasks.filter(t => t.status === 'Completada').length;
       const pending = total - completed;
-      
+
       // Actualizamos los contadores en el HTML
       if (activeTasksCount) activeTasksCount.textContent = total;
       if (completedTasksCount) completedTasksCount.textContent = completed;
       if (pendingTasksCount) pendingTasksCount.textContent = pending;
-      
+
     } catch (error) {
-      // En caso de error (servidor caído), mostramos guiones para evitar confundir al usuario
+      // En caso de error (por ejemplo, servidor caído), mostramos guiones para evitar confundir al usuario
       if (activeTasksCount) activeTasksCount.textContent = '-';
       if (completedTasksCount) completedTasksCount.textContent = '-';
       if (pendingTasksCount) pendingTasksCount.textContent = '-';
     }
-    
+
   } else {
     console.warn('No hay ninguna sesión activa.');
   }

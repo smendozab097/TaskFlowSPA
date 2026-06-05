@@ -2,11 +2,11 @@ import { getSession, deleteSession } from '../services/auth.service.js';
 import { initThemeToggle } from '../utils/theme.js';
 import Swal from 'sweetalert2';
 
-// ==========================================
-// RENDERIZAR CABECERA (renderHeader)
+// ----------------------------------------
+// RENDERIZAR CABECERA
 // Genera dinámicamente el HTML del menú de 
 // navegación superior según la sesión.
-// ==========================================
+// ----------------------------------------
 export function renderHeader() {
   const user = getSession();
   const currentPath = window.location.pathname;
@@ -48,11 +48,11 @@ export function renderHeader() {
   `;
 }
 
-// ==========================================
+// ----------------------------------------
 // INICIALIZACIÓN DE LA CABECERA (initHeader)
 // Asigna eventos a los botones del menú una
 // vez que el HTML está inyectado en el DOM.
-// ==========================================
+// ----------------------------------------
 export function initHeader() {
   // Inicializa el evento del botón de modo oscuro (importado desde utils/theme.js)
   initThemeToggle();

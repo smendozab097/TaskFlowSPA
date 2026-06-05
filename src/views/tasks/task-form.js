@@ -3,18 +3,17 @@ import { getSession } from '../../services/auth.service.js';
 import { renderHeader, initHeader } from '../../components/header.js';
 import Swal from 'sweetalert2';
 
-// ==========================================
-// VISTA FORMULARIO DE TAREAS (task-form.js)
+// ----------------------------------------
+// VISTA FORMULARIO DE TAREAS
 // Genera el HTML del formulario y maneja la 
 // lógica para crear tareas nuevas o editar
 // tareas existentes basado en sessionStorage.
-// ==========================================
+// ----------------------------------------
 
 export const renderTaskForm = () => {
-    // Renderiza el HTML principal concatenando la cabecera (Header) y el formulario
-    return `
+  // Renderiza el formulario
+  return `
     ${renderHeader()}
-
     <main class="mx-auto max-w-5xl px-6 py-10">
       <section class="rounded-[2rem] border border-blue-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-8 shadow-xl shadow-blue-50 dark:shadow-black/40 transition-colors duration-300">
         <p class="text-sm font-semibold uppercase tracking-[0.3em] text-blue-600 dark:text-blue-400">Formulario</p>
@@ -61,14 +60,13 @@ export const renderTaskForm = () => {
     </main>`;
 }
 
-// ==========================================
+// ----------------------------------------
 // INICIALIZAR FORMULARIO (initTaskForm)
 // Comprueba si hay un ID en sessionStorage para 
 // entrar en Modo Edición. De lo contrario,
 // entra en Modo Creación.
-// ==========================================
+// ----------------------------------------
 export async function initTaskForm() {
-  // Inicializamos eventos de la cabecera
   initHeader();
 
   // Seleccionamos los elementos del DOM clave
@@ -83,9 +81,9 @@ export async function initTaskForm() {
   const taskId = sessionStorage.getItem('editTaskId');
 
   if (taskId) {
-    // ==========================================
+    // ----------------------------------------
     // MODO EDICION
-    // ==========================================
+    // ----------------------------------------
     formTitle.textContent = 'Editar tarea';
     formDescription.textContent = 'Modifica los detalles de tu tarea existente.';
     submitBtn.textContent = 'Actualizar tarea';
@@ -102,13 +100,13 @@ export async function initTaskForm() {
         });
         return;
       }
-      
+
       // Llenamos el formulario con los datos recuperados
       document.getElementById('title').value = taskToEdit.title;
       document.getElementById('description').value = taskToEdit.description;
       document.getElementById('status').value = taskToEdit.status;
       document.getElementById('date').value = taskToEdit.date;
-      
+
       taskForm.classList.remove('hidden');
     } catch (error) {
       console.error('Error al cargar la tarea:', error);
@@ -120,20 +118,20 @@ export async function initTaskForm() {
     }
 
   } else {
-    // ==========================================
+    // ----------------------------------------
     // MODO CREACION
-    // ==========================================
+    // ----------------------------------------
     formTitle.textContent = 'Crear nueva tarea';
     formDescription.textContent = 'Registra los detalles para tu nueva tarea.';
     submitBtn.textContent = 'Guardar tarea';
-    
+
     taskForm.classList.remove('hidden');
   }
 
-  // ==========================================
+  // ----------------------------------------
   // EVENTO DE ENVÍO (Submit)
   // Maneja tanto creación como edición
-  // ==========================================
+  // ----------------------------------------
   taskForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -141,7 +139,7 @@ export async function initTaskForm() {
     if (!user) return;
 
     const data = new FormData(taskForm);
-    
+
     const taskData = {
       title: data.get('title').trim(),
       description: data.get('description').trim(),
@@ -177,7 +175,7 @@ export async function initTaskForm() {
       sessionStorage.removeItem('editTaskId');
       history.pushState(null, null, '/tasks');
       window.dispatchEvent(new Event('popstate'));
-      
+
     } catch (error) {
       console.error('Error al guardar la tarea:', error);
       Swal.fire({

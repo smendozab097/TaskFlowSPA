@@ -4,14 +4,14 @@ import { getUsers } from "../../services/users.service.js";
 import { renderHeader, initHeader } from "../../components/header.js";
 import Swal from 'sweetalert2';
 
-// ==========================================
-// VISTA LISTADO DE TAREAS (tasks.js)
+// ----------------------------------------
+// VISTA LISTADO DE TAREAS
 // Genera la vista principal donde el usuario
 // puede ver, editar y eliminar sus tareas.
-// ==========================================
+// ----------------------------------------
 
 export const renderTasks = () => {
-  // Renderiza el HTML principal concatenando la cabecera (Header) y el contenedor de tareas
+  // Renderiza el contenedor de tareas
   return `
     ${renderHeader()}
 
@@ -34,14 +34,14 @@ export const renderTasks = () => {
     `;
 }
 
-// ==========================================
-// INICIALIZAR LISTADO (initTasks)
+// ----------------------------------------
+// INICIALIZAR LISTADO 
 // Obtiene las tareas desde el backend (JSON Server)
 // y las pinta en el contenedor correspondiente.
 // Además, asigna los eventos para eliminar tareas.
-// ==========================================
+// ----------------------------------------
 export async function initTasks() {
-  // Inicializamos eventos de la cabecera
+
   initHeader();
 
   // Obtenemos el contenedor donde inyectaremos cada tarea
@@ -55,7 +55,7 @@ export async function initTasks() {
     const isAdmin = user.role && user.role.includes('ADMIN');
     console.log(isAdmin ? 'Usuario con rol ADMIN' : 'Usuario con rol USER');
 
-    // Obtenemos las tareas correspondientes
+    // Obtenemos las tareas correspondientes (todos o solo las propias, dependiendo de si es admin o user)
     const tasks = isAdmin ? await getTasks() : await getTasks(user.id);
 
     // Si es ADMIN, traemos la lista de usuarios para poder cruzarlos
@@ -75,7 +75,7 @@ export async function initTasks() {
       return;
     }
 
-    // Generamos el HTML para cada tarea iterando el arreglo
+    // Renderizamos cada tarea
     tasks.forEach(task => {
       // Si somos ADMIN, Cruzamos los datos para obtener el nombre del propietario
       let ownerInfo = '';
@@ -105,14 +105,14 @@ export async function initTasks() {
       tasksContainer.innerHTML += taskHTML;
     });
 
-    // ==========================================
+    // ----------------------------------------
     // MANEJO DE ELIMINACIÓN DE TAREAS
-    // ==========================================
+    // ----------------------------------------
     const deleteButtons = document.querySelectorAll('.delete-btn');
     deleteButtons.forEach(button => {
       button.addEventListener('click', async (e) => {
         const taskId = e.target.getAttribute('data-id');
-        
+
         // Confirmación visual con SweetAlert antes de borrar
         const result = await Swal.fire({
           title: '¿Eliminar tarea?',

@@ -2,14 +2,13 @@ import { createUser } from "../../services/users.service.js";
 import { createSession } from "../../services/auth.service.js";
 import Swal from 'sweetalert2';
 
-// ==========================================
-// VISTA DE REGISTRO (register.js)
-// Genera el formulario para registrar un
-// nuevo usuario y procesa la creación.
-// ==========================================
+// ----------------------------------------
+// VISTA DE REGISTRO
+// Genera el formulario para registrar un nuevo usuario y procesa la creación.
+// ----------------------------------------
 
 export function renderRegister() {
-  // Retorna el HTML del formulario de registro (pantalla dividida en PC)
+  // Retorna el HTML del formulario de registro
   return `
     <main class="grid min-h-screen lg:grid-cols-[0.95fr_1.05fr]">
       <section class="hidden border-r border-blue-100 dark:border-transparent bg-blue-600 dark:bg-slate-900 transition-colors duration-300 p-10 text-white lg:flex lg:flex-col lg:justify-between">
@@ -75,11 +74,10 @@ export function renderRegister() {
   `;
 }
 
-// ==========================================
-// INICIALIZAR REGISTRO (initRegister)
-// Escucha el envío del formulario, genera un
-// nuevo usuario, lo guarda y crea la sesión.
-// ==========================================
+// ----------------------------------------
+// INICIALIZAR REGISTRO
+// Escucha el envío del formulario, genera un nuevo usuario, lo guarda y crea la sesión.
+// ----------------------------------------
 export function initRegister() {
   const registerForm = document.getElementById('register-form');
 
@@ -105,10 +103,10 @@ export function initRegister() {
 
         // Limpiamos el formulario
         registerForm.reset();
-        
+
         // Logueamos automáticamente al usuario
         createSession(newUser);
-        
+
         // Notificación de éxito y redirección al dashboard
         Swal.fire({
           icon: 'success',
@@ -122,9 +120,9 @@ export function initRegister() {
         });
 
       } catch (error) {
-        // ==========================================
+        // ----------------------------------------
         // ERROR DE REGISTRO
-        // ==========================================
+        // ----------------------------------------
         console.error('Error al registrar usuario:', error);
         Swal.fire({
           icon: 'error',
