@@ -9,19 +9,19 @@ export const renderTasks = () => {
     ${renderHeader()}
 
     <main class="mx-auto max-w-6xl px-6 py-10">
-      <section class="flex flex-col gap-4 rounded-[2rem] bg-blue-600 px-8 py-10 text-white md:flex-row md:items-end md:justify-between shadow-xl shadow-blue-100">
+      <section class="flex flex-col gap-4 rounded-[2rem] bg-blue-600 dark:bg-slate-800 border dark:border-slate-700 px-8 py-10 text-white md:flex-row md:items-end md:justify-between shadow-xl shadow-blue-100 dark:shadow-black/50 transition-colors duration-300">
         <div>
-          <p class="text-sm font-semibold uppercase tracking-[0.3em] text-blue-100">CRUD de tareas</p>
-          <h1 class="mt-3 text-4xl font-black tracking-tight">Mis tareas</h1>
-          <p class="mt-4 max-w-2xl text-blue-50">Vista principal para listar, editar y eliminar las tareas del usuario autenticado.</p>
+          <p class="text-sm font-semibold uppercase tracking-[0.3em] text-blue-100 dark:text-blue-300">CRUD de tareas</p>
+          <h1 class="mt-3 text-4xl font-black tracking-tight dark:text-white">Mis tareas</h1>
+          <p class="mt-4 max-w-2xl text-blue-50 dark:text-slate-300">Vista principal para listar, editar y eliminar las tareas del usuario autenticado.</p>
         </div>
-        <a class="inline-flex items-center justify-center rounded-2xl bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50 transition-all duration-300 hover:scale-[1.03] active:scale-95 hover:shadow-lg cursor-pointer" href="/task-form" data-link onclick="sessionStorage.removeItem('editTaskId')">
+        <a class="inline-flex items-center justify-center rounded-2xl bg-white dark:bg-slate-700 px-5 py-3 text-sm font-bold text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-600 transition-all duration-300 hover:scale-[1.03] active:scale-95 hover:shadow-lg cursor-pointer border border-transparent dark:border-slate-600" href="/task-form" data-link onclick="sessionStorage.removeItem('editTaskId')">
           Crear tarea
         </a>
       </section>
 
       <section id="tasks-container" class="mt-8 grid gap-4">
-        <p class="text-slate-500 text-center py-10">Cargando tareas...</p>
+        <p class="text-slate-500 dark:text-slate-400 text-center py-10">Cargando tareas...</p>
       </section>
     </main>
     `;
@@ -67,21 +67,21 @@ export async function initTasks() {
         const owner = usersList.find(u => u.id === task.userid);
         const ownerName = owner ? `${owner.name} ${owner.lastname || ''}` : 'Desconocido';
         const ownerEmail = owner ? owner.email : 'N/A';
-        ownerInfo = `<p class="text-xs text-slate-500 mt-2 bg-blue-50/50 inline-block px-3 py-1 rounded-full border border-blue-100">Asignada a: <strong>${ownerName}</strong> (${ownerEmail})</p>`;
+        ownerInfo = `<p class="text-xs text-slate-500 dark:text-slate-400 mt-2 bg-blue-50/50 dark:bg-slate-700/50 inline-block px-3 py-1 rounded-full border border-blue-100 dark:border-slate-600">Asignada a: <strong class="dark:text-slate-300">${ownerName}</strong> (${ownerEmail})</p>`;
       }
 
       const taskHTML = `
-        <article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-default">
+        <article class="rounded-3xl border border-blue-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-lg shadow-blue-50 dark:shadow-black/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-default">
           <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
-              <p class="text-xs font-bold uppercase tracking-[0.25em] text-blue-600">${task.status}</p>
-              <h2 class="mt-2 text-2xl font-bold text-slate-900">${task.title}</h2>
-              <p class="mt-3 max-w-2xl text-slate-600">${task.description}</p>
+              <p class="text-xs font-bold uppercase tracking-[0.25em] text-blue-600 dark:text-blue-400">${task.status}</p>
+              <h2 class="mt-2 text-2xl font-bold text-slate-900 dark:text-slate-100">${task.title}</h2>
+              <p class="mt-3 max-w-2xl text-slate-600 dark:text-slate-300">${task.description}</p>
               ${ownerInfo}
             </div>
             <div class="flex gap-3">
-              <a class="rounded-full border border-blue-400 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50 transition-all duration-200 hover:scale-105 active:scale-95" href="/task-form" data-link onclick="sessionStorage.setItem('editTaskId', '${task.id}')">Editar</a>
-              <button class="delete-btn rounded-full border border-red-400 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95" data-id="${task.id}">Eliminar</button>
+              <a class="rounded-full border border-blue-400 dark:border-blue-500 px-4 py-2 text-sm font-semibold text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-700 transition-all duration-200 hover:scale-105 active:scale-95" href="/task-form" data-link onclick="sessionStorage.setItem('editTaskId', '${task.id}')">Editar</a>
+              <button class="delete-btn rounded-full border border-red-400 dark:border-red-500 px-4 py-2 text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95" data-id="${task.id}">Eliminar</button>
             </div>
           </div>
         </article>
