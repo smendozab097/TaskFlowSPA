@@ -188,15 +188,56 @@ Esto permite practicar autenticacion SPA sin agregar complejidad innecesaria en 
 
 ## Estado actual
 
-La base del proyecto ya esta montada con Vite. La implementacion funcional de la SPA se ira construyendo de forma progresiva, comenzando idealmente por:
+El proyecto se encuentra **completamente implementado** y funcional, cumpliendo con la arquitectura por capas y las metas pedagógicas:
 
-1. Configuracion del router.
-2. Layout base.
-3. Modulo de autenticacion.
-4. Guards de rutas.
-5. Modulo de tareas.
-6. Dashboard.
-7. Panel administrativo.
+1. **Router SPA (`router/`)**: Sistema de rutas dinámicas implementado mediante la History API (`pushState` y evento `popstate`), con guards de seguridad que restringen el acceso a rutas privadas para usuarios no autenticados y vistas administrativas solo para el rol `ADMIN`.
+2. **Layout base (`components/`)**: Cabecera interactiva y adaptativa (`header.js`) con soporte de tema claro/oscuro e indicador de sesión activa.
+3. **Módulo de Autenticación (`views/auth/`)**: Formulario de inicio de sesión (`login.js`) y registro de nuevos usuarios (`register.js`), con persistencia de sesión activa en `localStorage`.
+4. **Módulo de Tareas (`views/tasks/`)**: CRUD completo de tareas (listado, creación, edición y eliminación) sincronizado con el backend a través de `services/tasks.service.js`.
+5. **Dashboard (`views/dashboard.js`)**: Panel visual con métricas y resúmenes de tareas completadas, pendientes y activas en tiempo real.
+6. **Panel Administrativo (`views/users/admin.js`)**: Exclusivo para administradores. Permite visualizar a todos los usuarios registrados, modificar sus roles dinámicamente mediante un dropdown personalizado y eliminar cuentas de usuario.
+7. **Servicios (`services/`)**: Módulos dedicados para encapsular las peticiones HTTP (Fetch API) a la base de datos simulada y el manejo de almacenamiento local.
+8. **Utilidades (`utils/`)**: Helpers para el manejo del tema (`theme.js`), dropdowns personalizados (`dropdown.js`) e interceptor estético de alertas (`alerts.js`).
+
+---
+
+## Instrucciones para Ejecutar el Proyecto
+
+Para poner en marcha la aplicación, debes ejecutar tanto el servidor de desarrollo del frontend (SPA) como la API simulada (Backend fake).
+
+### Requisitos previos
+- Tener instalado [Node.js](https://nodejs.org/) (versión 16 o superior recomendada).
+
+### 1. Iniciar la API (Backend fake)
+La API se encuentra en la carpeta `TaskFlowAPI`, la cual está al mismo nivel que la carpeta de este proyecto (`TaskFlowSPA`).
+
+1. Abre una terminal nueva.
+2. Navega hacia la carpeta `TaskFlowAPI`:
+   ```bash
+   cd ../TaskFlowAPI
+   ```
+3. Ejecuta `json-server` apuntando al archivo `db.json` para levantar el servidor de datos en el puerto `3000`:
+   ```bash
+   npx json-server db.json
+   ```
+   *Nota: Por defecto, json-server se ejecutará en http://localhost:3000.*
+
+### 2. Iniciar la SPA (Frontend)
+El código de la interfaz de usuario se encuentra en esta carpeta (`TaskFlowSPA`).
+
+1. Abre una segunda terminal.
+2. Asegúrate de estar dentro del directorio de la aplicación (`TaskFlowSPA`).
+3. Instala las dependencias necesarias (si es la primera vez que lo ejecutas):
+   ```bash
+   npm install
+   ```
+4. Inicia el servidor de desarrollo de Vite:
+   ```bash
+   npm run dev
+   ```
+5. Abre la dirección que te proporcione la terminal (generalmente `http://localhost:5173` o similar) en tu navegador para interactuar con la aplicación.
+
+---
 
 ## Licencia
 
