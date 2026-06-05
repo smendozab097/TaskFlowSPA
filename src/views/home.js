@@ -8,14 +8,14 @@ export function renderHome() {
   if (user) {
     callToAction = `
       <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-        <a class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-200 hover:bg-blue-500" href="/dashboard" data-link>Ir a mi Dashboard</a>
+        <a class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-200 hover:bg-blue-500 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl active:scale-95" href="/dashboard" data-link>Ir a mi Dashboard</a>
       </div>
     `;
   } else {
     callToAction = `
       <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-        <a class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-200 hover:bg-blue-500" href="/login" data-link>Iniciar sesion</a>
-        <a class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-6 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50" href="/register" data-link>Crear cuenta</a>
+        <a class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-200 hover:bg-blue-500 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl active:scale-95" href="/login" data-link>Iniciar sesion</a>
+        <a class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-6 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50 transition-all duration-300 hover:scale-[1.03] active:scale-95" href="/register" data-link>Crear cuenta</a>
       </div>
     `;
   }
@@ -40,19 +40,19 @@ export function renderHome() {
         <section class="rounded-[2rem] border border-blue-100 bg-white p-8 shadow-xl shadow-blue-100/70">
           <h2 class="text-2xl font-bold text-slate-900">Vistas del proyecto</h2>
           <div class="mt-6 grid gap-4 sm:grid-cols-2">
-            <a class="rounded-3xl bg-sky-50 p-5 hover:bg-sky-100" href="/dashboard" data-link>
+            <a class="rounded-3xl bg-blue-100 p-5 shadow-blue-200 shadow-lg hover:bg-blue-200/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer block" href="/dashboard" data-link>
               <p class="text-sm font-semibold text-blue-600">Dashboard</p>
               <p class="mt-2 text-sm text-slate-600">Resumen principal de productividad.</p>
             </a>
-            <a class="rounded-3xl bg-sky-50 p-5 hover:bg-sky-100" href="/tasks" data-link>
+            <a class="rounded-3xl bg-blue-100 p-5 shadow-blue-200 shadow-lg hover:bg-blue-200/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer block" href="/tasks" data-link>
               <p class="text-sm font-semibold text-blue-600">Mis tareas</p>
               <p class="mt-2 text-sm text-slate-600">CRUD principal del usuario.</p>
             </a>
-            <a class="rounded-3xl bg-sky-50 p-5 hover:bg-sky-100" href="/profile" data-link>
+            <a class="rounded-3xl bg-blue-100 p-5 shadow-blue-200 shadow-lg hover:bg-blue-200/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer block" href="/profile" data-link>
               <p class="text-sm font-semibold text-blue-600">Mi perfil</p>
               <p class="mt-2 text-sm text-slate-600">Actualizar cuenta y datos personales.</p>
             </a>
-            <a class="rounded-3xl bg-sky-50 p-5 hover:bg-sky-100" href="/admin" data-link>
+            <a class="rounded-3xl bg-blue-100 p-5 shadow-blue-200 shadow-lg hover:bg-blue-200/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer block" href="/admin" data-link>
               <p class="text-sm font-semibold text-blue-600">Admin</p>
               <p class="mt-2 text-sm text-slate-600">Gestion de usuarios y roles.</p>
             </a>

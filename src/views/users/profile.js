@@ -20,29 +20,29 @@ export const renderProfile = () => {
             <div class="grid gap-5 md:grid-cols-2">
               <div>
                 <label class="mb-2 block text-sm font-medium text-slate-700" for="name">Nombre</label>
-                <input id="name" name="name" type="text" required class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none" />
+                <input id="name" name="name" type="text" required class="w-full rounded-2xl border border-gray-400/80 bg-blue-50 px-4 py-3 text-slate-900 focus:outline-none transition-all duration-300 focus:ring-2 focus:ring-blue-400 focus:border-transparent" />
               </div>
               <div>
                 <label class="mb-2 block text-sm font-medium text-slate-700" for="lastname">Apellido</label>
-                <input id="lastname" name="lastname" type="text" required class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none" />
+                <input id="lastname" name="lastname" type="text" required class="w-full rounded-2xl border border-gray-400/80 bg-blue-50 px-4 py-3 text-slate-900 focus:outline-none transition-all duration-300 focus:ring-2 focus:ring-blue-400 focus:border-transparent" />
               </div>
             </div>
 
             <div>
               <label class="mb-2 block text-sm font-medium text-slate-700" for="profile-email">Correo</label>
-              <input id="profile-email" name="email" type="email" required class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none" />
+              <input id="profile-email" name="email" type="email" required class="w-full rounded-2xl border border-gray-400/80 bg-blue-50 px-4 py-3 text-slate-900 focus:outline-none transition-all duration-300 focus:ring-2 focus:ring-blue-400 focus:border-transparent" />
             </div>
 
             <div>
               <label class="mb-2 block text-sm font-medium text-slate-700" for="password-new">Nueva contraseña</label>
-              <input id="password-new" name="password" type="password" placeholder="Escribe solo si deseas cambiarla" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
+              <input id="password-new" name="password" type="password" placeholder="Escribe solo si deseas cambiarla" class="w-full rounded-2xl border border-gray-400/80 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none transition-all duration-300 focus:ring-2 focus:ring-blue-400 focus:border-transparent" />
             </div>
 
             <div class="flex flex-col gap-3 pt-2 sm:flex-row">
-              <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer">
+              <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer transition-all duration-300 hover:scale-[1.03] active:scale-95 hover:shadow-lg">
                 Guardar cambios
               </button>
-              <button type="button" id="delete-account-btn" class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-red-600 hover:bg-red-50 cursor-pointer">
+              <button type="button" id="delete-account-btn" class="inline-flex items-center justify-center rounded-2xl border border-red-400 bg-white px-5 py-3 text-sm font-bold text-red-600 hover:bg-red-200/80 cursor-pointer transition-all duration-300 hover:scale-[1.03] active:scale-95">
                 Eliminar mi cuenta
               </button>
             </div>

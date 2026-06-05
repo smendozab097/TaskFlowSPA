@@ -42,6 +42,12 @@ Modificamos `src/router/router.js` para añadir protección en la navegación:
 *   Actualizamos el enrutador para importar las vistas desde sus nuevas subcarpetas e incorporamos la inicialización de eventos para la Home (`initHome`).
 *   Aseguramos que todos los enlaces del proyecto usen el atributo `data-link` para mantener el comportamiento Single Page Application.
 
+### 7. Interactividad y UX Avanzada (Micro-animaciones)
+Se aplicó un sistema de micro-animaciones usando utilidades nativas de Tailwind CSS en toda la SPA:
+*   **Tarjetas y Bloques**: Uso de `hover:-translate-y-1 hover:shadow-xl` para dar la sensación de elevación y profundidad.
+*   **Botones y Call to Actions**: Uso de `hover:scale-[1.03] active:scale-95` para crear un efecto dinámico de rebote y pulsación.
+*   **Formularios**: Añadida la clase `focus:ring-2` con transiciones suaves (`transition-all duration-300`) para mejorar la experiencia de llenado de datos.
+
 ---
 
 ## 📋 Validación del Código

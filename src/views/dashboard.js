@@ -7,39 +7,39 @@ export const renderDashboard = () => {
     ${renderHeader()}
     
     <main class="mx-auto max-w-6xl px-6 py-10">
-      <section class="rounded-[2rem] bg-blue-600 px-8 py-10 text-white shadow-xl shadow-blue-100">
+      <section class="rounded-[2rem] bg-blue-600 px-8 py-10 text-white shadow-lg shadow-blue-300">
         <p class="text-sm font-semibold uppercase tracking-[0.3em] text-blue-100">Dashboard principal</p>
         <h1 id="welcome-heading" class="mt-3 text-4xl font-black tracking-tight">Bienvenido.</h1>
         <p class="mt-4 max-w-2xl text-blue-50">Resumen general del trabajo del usuario, accesos rápidos y estado actual de productividad.</p>
       </section>
 
       <section class="mt-8 grid gap-4 md:grid-cols-3">
-        <article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50">
+        <article class="rounded-3xl border border-blue-400 bg-white p-6 shadow-lg shadow-blue-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
           <p class="text-sm text-slate-500">Tareas activas</p>
           <p id="active-tasks-count" class="mt-3 text-4xl font-black text-blue-700">...</p>
         </article>
-        <article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50">
+        <article class="rounded-3xl border border-blue-400 bg-white p-6 shadow-lg shadow-blue-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
           <p class="text-sm text-slate-500">Completadas</p>
           <p id="completed-tasks-count" class="mt-3 text-4xl font-black text-blue-700">...</p>
         </article>
-        <article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50">
+        <article class="rounded-3xl border border-blue-400 bg-white p-6 shadow-lg shadow-blue-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
           <p class="text-sm text-slate-500">Pendientes hoy</p>
           <p id="pending-tasks-count" class="mt-3 text-4xl font-black text-blue-700">...</p>
         </article>
       </section>
 
       <section class="mt-8">
-        <article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-50">
+        <article class="rounded-3xl border border-blue-400 bg-white p-6 shadow-lg shadow-blue-200 transition-all duration-300 hover:shadow-xl">
           <div class="flex items-center justify-between">
             <h2 class="text-xl font-bold text-slate-900">Accesos rápidos</h2>
-            <a class="text-sm font-semibold text-blue-700 hover:text-blue-600" href="/tasks" data-link>Ver tareas</a>
+            <a class="text-sm font-semibold text-blue-700 hover:text-blue-900 transition-colors duration-200" href="/tasks" data-link>Ver tareas</a>
           </div>
           <div class="mt-6 grid gap-4 sm:grid-cols-2">
-            <a class="rounded-3xl bg-blue-50 p-5 hover:bg-blue-100" href="/task-form" data-link onclick="sessionStorage.removeItem('editTaskId')">
+            <a class="rounded-3xl bg-blue-50 p-5 hover:bg-blue-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-blue-400/50 shadow-md border border-blue-200 cursor-pointer block" href="/task-form" data-link onclick="sessionStorage.removeItem('editTaskId')">
               <p class="text-sm font-semibold text-blue-600">Crear</p>
               <h3 class="mt-2 text-lg font-bold text-slate-900">Nueva tarea</h3>
             </a>
-            <a class="rounded-3xl bg-blue-50 p-5 hover:bg-blue-100" href="/profile" data-link>
+            <a class="rounded-3xl bg-blue-50 p-5 hover:bg-blue-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-blue-400/50 shadow-md border border-blue-200 cursor-pointer block" href="/profile" data-link>
               <p class="text-sm font-semibold text-blue-600">Cuenta</p>
               <h3 class="mt-2 text-lg font-bold text-slate-900">Editar perfil</h3>
             </a>
